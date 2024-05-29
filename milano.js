@@ -961,9 +961,8 @@ window.onload = async () => {
 }
 
 
-function createBanner(categorisedCookies, template, domain) {
+function createBanner(categorisedCookies, template) {
 
-    const categories = Object.keys(categorisedCookies)
     let banner = `
   
   <div class="idfy-${template.bannerType}-AE1VSVI8T5" id="banner-home">
@@ -972,8 +971,8 @@ function createBanner(categorisedCookies, template, domain) {
         <div class="${template.bannerType}-inner-AE1VSVI8T5">
         <p class="description-AE1VSVI8T5 ${template.bannerType}-desc-AE1VSVI8T5" >${template.bannerText}</p>
           <div class="${template.bannerType}-button-container-AE1VSVI8T5">
-              <button onclick="submitConsent('all','${domain}')" id="allow-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Allow all</button>
-              <button onclick="submitConsent('necessary','${domain}')" class="${template.bannerType}-button-AE1VSVI8T5">Allow only Necessary</button>
+              <button onclick="submitConsent('all')" id="allow-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Allow all</button>
+              <button onclick="submitConsent('necessary')" class="${template.bannerType}-button-AE1VSVI8T5">Allow only Necessary</button>
               <button id="customize-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Customize Settings</button>
           </div>
         </div>
@@ -994,13 +993,14 @@ function createBanner(categorisedCookies, template, domain) {
                 <h2 class="box-heading-AE1VSVI8T5">About cookies on this site.</h2>
                 <p class="box-description-AE1VSVI8T5">${template.customizeDescription}</p>
                 <div class="categories-AE1VSVI8T5">`
-
+  
+    const categories = Object.keys(categorisedCookies)
     categories.forEach(category => {
-        const cookieData = JSON.parse(categorisedCookies[category])
-
-        const isNecessary = category === "necessary";
-        const disabledClass = isNecessary ? 'disabled' : '';
-        banner += `
+      const cookieData = (categorisedCookies[category])
+  
+      const isNecessary = category === "necessary";
+      const disabledClass = isNecessary ? 'disabled' : '';
+      banner += `
                     <div class="category-AE1VSVI8T5">
                         <div class="category-header-AE1VSVI8T5">
                             <div onclick="showDropdown('${category}')" style="cursor:pointer">
@@ -1022,21 +1022,21 @@ function createBanner(categorisedCookies, template, domain) {
                         <div class="show-cookies-AE1VSVI8T5 show-cookies-AE1VSVI8T5-${category}">
                           <div id= "all-cookies-AE1VSVI8T5-${category}" class="all-cookies-AE1VSVI8T5">
   `
-        cookieData.data.forEach(cookie => {
-            banner += `            
+      cookieData.data.forEach(cookie => {
+        banner += `            
                             <div class="cookie-AE1VSVI8T5">
                                 <p class="cookie-name-AE1VSVI8T5"><span> Name </span>:
                                     ${cookie.cookie_name}</p>
                                 <p class="platform-AE1VSVI8T5"><span>Platform </span>: ${cookie.platform}</p>
                             </div>
   `
-        })
-        banner += `</div>
+      })
+      banner += `</div>
               </div>
             </div>`
-
+  
     })
-
+  
     banner += `
   
                 </div>
@@ -1045,8 +1045,8 @@ function createBanner(categorisedCookies, template, domain) {
   
         <div class="bottom-panel-AE1VSVI8T5">
             <div class="preference-button-AE1VSVI8T5">
-                <button onclick="submitConsent('preference','${domain}')" class="button1-AE1VSVI8T5">Save my Preferences</button>
-                <button onclick="submitConsent('necessary','${domain}')" class="button2-AE1VSVI8T5">Allow only Necessary</button>
+                <button onclick="submitConsent('preference')" class="button1-AE1VSVI8T5">Save my Preferences</button>
+                <button onclick="submitConsent('necessary')" class="button2-AE1VSVI8T5">Allow only Necessary</button>
             </div>
             <div class="powered-AE1VSVI8T5">
                 Powered by <span><a href="https://www.privyone.com/" target="_blank">PRIVY</a></span>
@@ -1058,8 +1058,9 @@ function createBanner(categorisedCookies, template, domain) {
   
   `
     return banner
-
-}
+  
+  }
+  
 
 function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
