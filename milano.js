@@ -20,7 +20,7 @@ window.onload = async () => {
     let consentVariable = localStorage.getItem('PrivyConsent')
     consentVariable = JSON.parse(consentVariable)
 
-    if (!consentVariable || consentVariable.update == 0) {
+    // if (!consentVariable || consentVariable.update == 0) {
         const categorisedCookies = {
             necessary: {
                 "data": [
@@ -358,7 +358,7 @@ window.onload = async () => {
         }
         const categories = Object.keys(categorisedCookies)
         let consent = {};
-
+        if(!consentVariable){
         for (let key of categories) {
             if (key === 'necessary') {
                 consent[key] = 1;
@@ -374,7 +374,7 @@ window.onload = async () => {
         window.dataLayer.push({
             event: 'consent_change',
             consentState: consent
-        })
+        })}
 
 
         const template = {
@@ -965,7 +965,7 @@ window.onload = async () => {
 
     }
 
-}
+// }
 
 
 function createBanner(categorisedCookies, template) {
