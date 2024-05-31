@@ -367,6 +367,13 @@ window.onload = async () => {
             }
         }
         consent.update = 0
+
+        // Push the initial consent state to the data layer
+        window.dataLayer.push({
+            event: 'consent_change',
+            consentState: consent
+        })
+
         consent = JSON.stringify(consent)
         localStorage.setItem('PrivyConsent', consent)
 
@@ -993,14 +1000,14 @@ function createBanner(categorisedCookies, template) {
                 <h2 class="box-heading-AE1VSVI8T5">About cookies on this site.</h2>
                 <p class="box-description-AE1VSVI8T5">${template.customizeDescription}</p>
                 <div class="categories-AE1VSVI8T5">`
-  
+
     const categories = Object.keys(categorisedCookies)
     categories.forEach(category => {
-      const cookieData = (categorisedCookies[category])
-  
-      const isNecessary = category === "necessary";
-      const disabledClass = isNecessary ? 'disabled' : '';
-      banner += `
+        const cookieData = (categorisedCookies[category])
+
+        const isNecessary = category === "necessary";
+        const disabledClass = isNecessary ? 'disabled' : '';
+        banner += `
                     <div class="category-AE1VSVI8T5">
                         <div class="category-header-AE1VSVI8T5">
                             <div onclick="showDropdown('${category}')" style="cursor:pointer">
@@ -1022,21 +1029,21 @@ function createBanner(categorisedCookies, template) {
                         <div class="show-cookies-AE1VSVI8T5 show-cookies-AE1VSVI8T5-${category}">
                           <div id= "all-cookies-AE1VSVI8T5-${category}" class="all-cookies-AE1VSVI8T5">
   `
-      cookieData.data.forEach(cookie => {
-        banner += `            
+        cookieData.data.forEach(cookie => {
+            banner += `            
                             <div class="cookie-AE1VSVI8T5">
                                 <p class="cookie-name-AE1VSVI8T5"><span> Name </span>:
                                     ${cookie.cookie_name}</p>
                                 <p class="platform-AE1VSVI8T5"><span>Platform </span>: ${cookie.platform}</p>
                             </div>
   `
-      })
-      banner += `</div>
+        })
+        banner += `</div>
               </div>
             </div>`
-  
+
     })
-  
+
     banner += `
   
                 </div>
@@ -1058,9 +1065,9 @@ function createBanner(categorisedCookies, template) {
   
   `
     return banner
-  
-  }
-  
+
+}
+
 
 function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
@@ -1096,7 +1103,11 @@ function submitConsent(agreedCategories, domain) {
     consent = JSON.stringify(consent)
     localStorage.setItem('PrivyConsent', consent)
 
-
+    // Push the updated consent state to the data layer
+    window.dataLayer.push({
+        event: 'consent_change',
+        consentState: JSON.parse(consent)
+    })
 
 
     const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
