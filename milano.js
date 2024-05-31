@@ -1110,10 +1110,10 @@ function submitConsent(agreedCategories, domain) {
     })
 
 
-    const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
-    customizeScreen.style.display = "none"
-    const bannerHome = document.getElementById("banner-home")
-    bannerHome.style.display = "none"
+    // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
+    // customizeScreen.style.display = "none"
+    // const bannerHome = document.getElementById("banner-home")
+    // bannerHome.style.display = "none"
 
 }
 
