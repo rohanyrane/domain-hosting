@@ -368,14 +368,14 @@ window.onload = async () => {
         }
         consent.update = 0
 
+        consent = JSON.stringify(consent)
+        localStorage.setItem('PrivyConsent', consent)
         // Push the initial consent state to the data layer
         window.dataLayer.push({
             event: 'consent_change',
             consentState: consent
         })
 
-        consent = JSON.stringify(consent)
-        localStorage.setItem('PrivyConsent', consent)
 
         const template = {
             bannerType: "banner",
@@ -1106,7 +1106,7 @@ function submitConsent(agreedCategories, domain) {
     // Push the updated consent state to the data layer
     window.dataLayer.push({
         event: 'consent_change',
-        consentState: JSON.parse(consent)
+        consentState: consent
     })
 
 
