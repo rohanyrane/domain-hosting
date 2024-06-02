@@ -1105,6 +1105,11 @@ function submitConsent(agreedCategories, domain) {
             agreedCookies.push(categoryName)
             consent[categoryName] = 1
         }
+        for (let key in consent) {
+            if (!agreedCookies.includes(key)) {
+                consent[key] = 0
+            }
+        }
     }
 
     consent.update = 1
