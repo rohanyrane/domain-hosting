@@ -30,6 +30,7 @@ window.onload = async () => {
       // Loop through each cookie and set its expiration date to a past date
       cookies.forEach(cookie => {
         const [name] = cookie.split('=');
+        console.log("cookie name:",cookie);
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; Secure; SameSite=Strict`;
       });
     
