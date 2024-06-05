@@ -19,13 +19,25 @@ window.onload = async () => {
 
     let consentVariable = localStorage.getItem('PrivyConsent')
     consentVariable = JSON.parse(consentVariable)
-    let cookies = document.cookie
-    console.log("cookies from page : ",cookies)
-    if (cookies !== undefined) {
-      cookies = cookies.split(';').map(cookie => cookie.trim())
-      cookies = cookies.map(cookie => `${cookie};expires=Thu, 01 Jan 1970 00:00:00 GMT`)
-      res.setHeader('Set-Cookie', cookies)
+    
+    ////////////////////////////////////////////////////
+    let cookies = document.cookie;
+    console.log("cookies from page:", cookies);
+    
+    if (cookies) {
+      cookies = cookies.split(';').map(cookie => cookie.trim());
+    
+      // Loop through each cookie and set its expiration date to a past date
+      cookies.forEach(cookie => {
+        const [name] = cookie.split('=');
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; Secure; SameSite=Strict`;
+      });
+    
+      console.log(document.cookie);
     }
+
+/////////////////////////////////////////////////////
+
     // if (!consentVariable || consentVariable.update == 0) {
     const categorisedCookies = {
         necessary: {
