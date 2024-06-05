@@ -19,7 +19,13 @@ window.onload = async () => {
 
     let consentVariable = localStorage.getItem('PrivyConsent')
     consentVariable = JSON.parse(consentVariable)
-
+    let cookies = req.headers.cookie
+    console.log("cookies from page : ",cookies)
+    // if (cookies !== undefined) {
+    //   cookies = cookies.split(';').map(cookie => cookie.trim())
+    //   cookies = cookies.map(cookie => `${cookie}; Secure; HttpOnly; SameSite=Strict`)
+    //   res.setHeader('Set-Cookie', cookies)
+    // }
     // if (!consentVariable || consentVariable.update == 0) {
     const categorisedCookies = {
         necessary: {
@@ -1121,7 +1127,7 @@ function submitConsent(agreedCategories, domain) {
         event: 'consent_change',
         consentState: consent
     })
-
+    
 
     // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
     // customizeScreen.style.display = "none"
