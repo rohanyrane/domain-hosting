@@ -21,11 +21,11 @@ window.onload = async () => {
     consentVariable = JSON.parse(consentVariable)
     let cookies = document.cookie
     console.log("cookies from page : ",cookies)
-    // if (cookies !== undefined) {
-    //   cookies = cookies.split(';').map(cookie => cookie.trim())
-    //   cookies = cookies.map(cookie => `${cookie}; Secure; HttpOnly; SameSite=Strict`)
-    //   res.setHeader('Set-Cookie', cookies)
-    // }
+    if (cookies !== undefined) {
+      cookies = cookies.split(';').map(cookie => cookie.trim())
+      cookies = cookies.map(cookie => `${cookie};expires=Thu, 01 Jan 1970 00:00:00 GMT`)
+      res.setHeader('Set-Cookie', cookies)
+    }
     // if (!consentVariable || consentVariable.update == 0) {
     const categorisedCookies = {
         necessary: {
