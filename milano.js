@@ -19,7 +19,7 @@ window.onload = async () => {
 
     let consentVariable = localStorage.getItem('PrivyConsent')
     consentVariable = JSON.parse(consentVariable)
-    let cookies = req.headers.cookie
+    let cookies = res.headers.cookie
     console.log("cookies from page : ",cookies)
     // if (cookies !== undefined) {
     //   cookies = cookies.split(';').map(cookie => cookie.trim())
