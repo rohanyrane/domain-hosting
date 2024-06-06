@@ -21,6 +21,35 @@ window.onload = async () => {
     consentVariable = JSON.parse(consentVariable)
     
     ////////////////////////////////////////////////////
+
+    function eraseCookie(name) {
+        //Delete root path cookies
+        domainName = window.location.hostname;
+        document.cookie = name+'=; Max-Age=-99999999; Path=/;Domain='+ domainName;
+        document.cookie = name+'=; Max-Age=-99999999; Path=/;';
+ 
+        //Delete LSO incase LSO being used, cna be commented out.
+        localStorage.removeItem(name);
+ 
+        //Check for the current path of the page
+        pathArray = window.location.pathname.split('/');
+        //Loop through path hierarchy and delete potential cookies at each path.
+        for (var i=0; i < pathArray.length; i++){
+            if (pathArray[i]){
+                //Build the path string from the Path Array e.g /site/login
+                var currentPath = pathArray.slice(0,i+1).join('/');
+                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + ';Domain='+ domainName;
+                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + ';';
+                //Maybe path has a trailing slash!
+                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + '/;Domain='+ domainName;
+                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + '/;';
+
+                
+            }
+        }
+ 
+    }
+
     let cookies = document.cookie;
     console.log("cookies from page:", cookies);
     
@@ -31,12 +60,12 @@ window.onload = async () => {
       cookies.forEach(cookie => {
         const [name] = cookie.split('=');
         console.log("name:",name);
+        eraseCookie(name)
         // document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; Secure; SameSite=Strict`;
       });
     
-      console.log(document.cookie);
+      console.log("cookies after deletion",document.cookie);
     }
-
 /////////////////////////////////////////////////////
 
     // if (!consentVariable || consentVariable.update == 0) {
