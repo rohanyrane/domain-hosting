@@ -81,7 +81,7 @@ window.onload = async () => {
             }
         }
     }
-    eraseCookie2
+    eraseCookie2()
 
     /////////////////////////////////////////////////////
 
