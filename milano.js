@@ -19,52 +19,71 @@ window.onload = async () => {
 
     let consentVariable = localStorage.getItem('PrivyConsent')
     consentVariable = JSON.parse(consentVariable)
-    
+
     ////////////////////////////////////////////////////
+    let cookies = document.cookie;
+    console.log("cookies from page:", cookies);
+
+    if (cookies) {
+        cookies = cookies.split(';').map(cookie => cookie.trim());
+        // Loop through each cookie and set its expiration date to a past date
+        cookies.forEach(cookie => {
+            const [name] = cookie.split('=');
+            console.log("name:", name);
+            // eraseCookie(name)
+        });
+
+    }
 
     function eraseCookie(name) {
         //Delete root path cookies
         domainName = window.location.hostname;
-        document.cookie = name+'=; Max-Age=-99999999; Path=/;Domain='+ domainName;
-        document.cookie = name+'=; Max-Age=-99999999; Path=/;';
- 
-        //Delete LSO incase LSO being used, cna be commented out.
-        localStorage.removeItem(name);
- 
+        document.cookie = name + '=; Max-Age=-99999999; Path=/;Domain=' + domainName;
+        document.cookie = name + '=; Max-Age=-99999999; Path=/;';
+
+
         //Check for the current path of the page
         pathArray = window.location.pathname.split('/');
         //Loop through path hierarchy and delete potential cookies at each path.
-        for (var i=0; i < pathArray.length; i++){
-            if (pathArray[i]){
+        for (var i = 0; i < pathArray.length; i++) {
+            if (pathArray[i]) {
                 //Build the path string from the Path Array e.g /site/login
-                var currentPath = pathArray.slice(0,i+1).join('/');
-                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + ';Domain='+ domainName;
-                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + ';';
+                var currentPath = pathArray.slice(0, i + 1).join('/');
+                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + ';Domain=' + domainName;
+                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + ';';
                 //Maybe path has a trailing slash!
-                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + '/;Domain='+ domainName;
-                document.cookie = name+'=; Max-Age=-99999999; Path=' + currentPath + '/;';
+                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;Domain=' + domainName;
+                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;';
 
-                
+
             }
         }
- 
+
     }
 
-    let cookies = document.cookie;
-    console.log("cookies from page:", cookies);
-    
-    if (cookies) {
-      cookies = cookies.split(';').map(cookie => cookie.trim());
-    
-      // Loop through each cookie and set its expiration date to a past date
-      cookies.forEach(cookie => {
-        const [name] = cookie.split('=');
-        console.log("name:",name);
-        eraseCookie(name)
-      });
-    
+    function eraseCookie2() {
+        var cookies = document.cookie.split("; ");
+        for (var c = 0; c < cookies.length; c++) {
+            var d = window.location.hostname.split(".");
+            while (d.length > 0) {
+                var cookieName = cookies[c].split(";")[0].split("=")[0];
+                var cookieBase = encodeURIComponent(cookieName) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+                var p = location.pathname.split('/');
+                // if (cookieName.indexOf(excludeString) !== -1) {
+                    document.cookie = cookieBase + '/';
+                    while (p.length > 0) {
+                        document.cookie = cookieBase + p.join('/');
+                        p.pop();
+                    };
+                // }
+
+                d.shift();
+            }
+        }
     }
-/////////////////////////////////////////////////////
+    eraseCookie2
+
+    /////////////////////////////////////////////////////
 
     // if (!consentVariable || consentVariable.update == 0) {
     const categorisedCookies = {
@@ -423,7 +442,7 @@ window.onload = async () => {
             consentState: consent
         })
     }
-    else{
+    else {
         window.dataLayer.push({
             event: 'consent_change',
             consentState: consentVariable
@@ -1167,7 +1186,7 @@ function submitConsent(agreedCategories, domain) {
         event: 'consent_change',
         consentState: consent
     })
-    
+
 
     // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
     // customizeScreen.style.display = "none"
