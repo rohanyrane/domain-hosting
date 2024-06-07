@@ -60,7 +60,7 @@ window.onload = async () => {
       cookies.forEach(cookie => {
         const [name] = cookie.split('=');
         console.log("name:",name);
-        // eraseCookie(name)
+        eraseCookie(name)
       });
     
     }
