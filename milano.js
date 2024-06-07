@@ -80,6 +80,7 @@ window.onload = async () => {
                 d.shift();
             }
         }
+        console.log("erae2 function executed");
     }
     eraseCookie2()
 
