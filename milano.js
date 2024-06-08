@@ -70,11 +70,11 @@ window.onload = async () => {
                 var cookieBase = encodeURIComponent(cookieName) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
                 var p = location.pathname.split('/');
                 // if (cookieName.indexOf(excludeString) !== -1) {
-                    document.cookie = cookieBase + '/';
-                    while (p.length > 0) {
-                        document.cookie = cookieBase + p.join('/');
-                        p.pop();
-                    };
+                document.cookie = cookieBase + '/';
+                while (p.length > 0) {
+                    document.cookie = cookieBase + p.join('/');
+                    p.pop();
+                };
                 // }
 
                 d.shift();
@@ -82,7 +82,16 @@ window.onload = async () => {
         }
         console.log("erae2 function executed");
     }
-    eraseCookie2()
+    // eraseCookie2()
+
+    cookieNames = ['PREF']
+    function deleteCookies(cookieNames) {
+        for (var i = 0; i < cookieNames.length; i++) {
+            document.cookie = cookieNames[i] + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+    }
+    deleteCookies(cookieNames)
+
 
     /////////////////////////////////////////////////////
 
