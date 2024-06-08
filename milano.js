@@ -89,6 +89,7 @@ window.onload = async () => {
         for (var i = 0; i < cookieNames.length; i++) {
             document.cookie = cookieNames[i] + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         }
+        console.log("cookie delte");
     }
     deleteCookies(cookieNames)
 
