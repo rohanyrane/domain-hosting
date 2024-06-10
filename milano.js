@@ -26,7 +26,6 @@ window.onload = async () => {
 
     if (cookies) {
         cookies = cookies.split(';').map(cookie => cookie.trim());
-        // Loop through each cookie and set its expiration date to a past date
         cookies.forEach(cookie => {
             const [name] = cookie.split('=');
             console.log("name:", name);
@@ -55,34 +54,10 @@ window.onload = async () => {
                 document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;Domain=' + domainName;
                 document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;';
 
-
             }
         }
 
     }
-
-    function eraseCookie2() {
-        var cookies = document.cookie.split("; ");
-        for (var c = 0; c < cookies.length; c++) {
-            var d = window.location.hostname.split(".");
-            while (d.length > 0) {
-                var cookieName = cookies[c].split(";")[0].split("=")[0];
-                var cookieBase = encodeURIComponent(cookieName) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
-                var p = location.pathname.split('/');
-                // if (cookieName.indexOf(excludeString) !== -1) {
-                document.cookie = cookieBase + '/';
-                while (p.length > 0) {
-                    document.cookie = cookieBase + p.join('/');
-                    p.pop();
-                };
-                // }
-
-                d.shift();
-            }
-        }
-        console.log("erae2 function executed");
-    }
-    // eraseCookie2()
 
     cookieNames = ['PREF']
     function deleteCookies(cookieNames) {
