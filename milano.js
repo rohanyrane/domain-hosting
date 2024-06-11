@@ -29,7 +29,7 @@ window.onload = async () => {
         cookies.forEach(cookie => {
             const [name] = cookie.split('=');
             console.log("name:", name);
-            eraseCookie(name)
+            // eraseCookie(name)
         });
 
     }
@@ -41,9 +41,9 @@ window.onload = async () => {
         document.cookie = name + '=; Max-Age=-99999999; Path=/;';
 
 
-        //Check for the current path of the page
+        //current path of the page
         pathArray = window.location.pathname.split('/');
-        //Loop through path hierarchy and delete potential cookies at each path.
+        //delete potential cookies at each path.
         for (var i = 0; i < pathArray.length; i++) {
             if (pathArray[i]) {
                 //Build the path string from the Path Array e.g /site/login
@@ -58,15 +58,6 @@ window.onload = async () => {
         }
 
     }
-
-    cookieNames = ['PREF']
-    function deleteCookies(cookieNames) {
-        for (var i = 0; i < cookieNames.length; i++) {
-            document.cookie = cookieNames[i] + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        }
-        console.log("cookie delte");
-    }
-    deleteCookies(cookieNames)
 
 
     /////////////////////////////////////////////////////
