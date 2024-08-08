@@ -1154,9 +1154,20 @@ function submitConsent(agreedCategories, domain) {
         }
     }
 
+    const consentCookie = consent
+    consent.forEach((category)=>{
+        console.log("bdjd",category);
+        if(consent.category===1)
+        consentCookie.category=true
+        else
+        consentCookie.category=false
+    })
+
     consent.update = 1
     consent = JSON.stringify(consent)
     localStorage.setItem('PrivyConsent', consent)
+    document.cookie = "PrivyConsent=consentCookie; expires=05 Aug 2025 23:00:00 UTC;"
+
 
     // Push the updated consent state to the data layer
     window.dataLayer.push({
