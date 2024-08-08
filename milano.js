@@ -1162,6 +1162,7 @@ function submitConsent(agreedCategories, domain) {
         else
         consentCookie.key=false
     })
+    console.log(consentCookie);
 
     consent.update = 1
     consent = JSON.stringify(consent)
