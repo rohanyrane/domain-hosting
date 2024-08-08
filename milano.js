@@ -1154,12 +1154,13 @@ function submitConsent(agreedCategories, domain) {
     }
 
     const consentCookie = consent
-    consent.forEach((category)=>{
-        console.log("bdjd",category);
-        if(consent.category===1)
-        consentCookie.category=true
+    const keys = Object.keys(consent)
+    keys.forEach((key)=>{
+        console.log("bdjd",key);
+        if(consent.key===1)
+        consentCookie.key=true
         else
-        consentCookie.category=false
+        consentCookie.key=false
     })
 
     consent.update = 1
