@@ -1166,7 +1166,7 @@ function submitConsent(agreedCategories, domain) {
     consent.update = 1
     consent = JSON.stringify(consent)
     localStorage.setItem('PrivyConsent', consent)
-    document.cookie = "PrivyConsent=consentCookie; expires=05 Aug 2025 23:00:00 UTC;"
+    document.cookie = consentCookie
 
 
     // Push the updated consent state to the data layer
