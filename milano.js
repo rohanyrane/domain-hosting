@@ -22,13 +22,12 @@ window.onload = async () => {
 
     ////////////////////////////////////////////////////
     let cookies = document.cookie;
-    console.log("cookies from page:", cookies);
 
     if (cookies) {
         cookies = cookies.split(';').map(cookie => cookie.trim());
         cookies.forEach(cookie => {
             const [name] = cookie.split('=');
-            console.log("name:", name);
+            // console.log("name:", name);
             // eraseCookie(name)
         });
 
