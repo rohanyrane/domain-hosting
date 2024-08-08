@@ -1153,21 +1153,20 @@ function submitConsent(agreedCategories, domain) {
         }
     }
 
-    const consentCookie = consent
+    const consentCookie = {}
     const keys = Object.keys(consent)
     keys.forEach((key)=>{
         console.log("bdjd",key);
-        if(consent.key===1)
-        consentCookie.key=true
+        if(consent[key]===1)
+        consentCookie[key]=true
         else
-        consentCookie.key=false
+        consentCookie[key]=false
     })
-    console.log(consentCookie);
 
     consent.update = 1
     consent = JSON.stringify(consent)
     localStorage.setItem('PrivyConsent', consent)
-    document.cookie = consentCookie
+    document.cookie = `privyConsent=${JSON.stringify(consentCookie)}; path=/`;
 
 
     // Push the updated consent state to the data layer
