@@ -1156,7 +1156,6 @@ function submitConsent(agreedCategories, domain) {
     const consentCookie = {}
     const keys = Object.keys(consent)
     keys.forEach((key)=>{
-        console.log("bdjd",key);
         if(consent[key]===1)
         consentCookie[key]=true
         else
