@@ -61,7 +61,7 @@ window.onload = async () => {
 
     /////////////////////////////////////////////////////
 
-    if (!consentVariable || consentVariable.update == 0) {
+    // if (!consentVariable || consentVariable.update == 0) {
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -1012,7 +1012,7 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
-}
+// }
 
 }
 
