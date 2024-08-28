@@ -129,23 +129,18 @@ function submitConsent(agreedCategories, domain) {
             agreedCookies.push(categoryName);
             cookieConsent[categoryName] = true;
         });
-        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
+        // Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
     }
 
     cookieConsent.update = true
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
 
-    // Push the updated consent state to the data layer
-    window.dataLayer.push({
-        event: 'consent_change',
-        consentState: cookieConsent
-    })
     toggleBanner('hide')
 }
 
 function toggleBanner(action) {
     if (action === 'show') {
-        const element = document.getElementById('banner-home').style.display = ''
+        document.getElementById('banner-home').style.display = ''
     }
     else if (action === 'hide') {
         document.getElementById("customize-screen-AE1VSVI8T5").style.display = 'none'
@@ -489,30 +484,43 @@ const categorisedCookies = {
 
 }
 
+const template = {
+    bannerType: "banner",
+    verticalAlign: "bottom",
+    horizontalAlign: "right",
+    buttonColor: "#1C43B9",
+    hoverColor: "#214698",
+    textColor: "#fff",
+    theme: "light",
+    fontName: "Helvetica",
+    toggleColor: "#1C43B9",
+    bannerText: `We use three kinds of cookies on our websites: required, functional, and advertising. You can choose whether functional and advertising cookies apply. Click on the different cookie categories to find out more about each category and to change the default settings.`,
+    customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
+}
+
 window.onload = async () => {
+
+    const url = 'https://www.idfy.com/'
+    const domain = extractDomainName(url)
+    const categories = Object.keys(categorisedCookies)
+    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
+    if (!consentCookie) {
+        // toggleBanner('show')
+            let cookie = {}
+            for (let key of categories) {
+                if (key === 'necessary')
+                    cookie[key] = true
+                else
+                    cookie[key] = false
+            }
+            cookie.update = false
+            document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
+        }
 
     consentButtonDiv = document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
-
-    const url = 'https://www.idfy.com/'
-    const domain = extractDomainName(url)
-    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
-
-    const template = {
-        bannerType: "banner",
-        verticalAlign: "bottom",
-        horizontalAlign: "right",
-        buttonColor: "#1C43B9",
-        hoverColor: "#214698",
-        textColor: "#fff",
-        theme: "light",
-        fontName: "Helvetica",
-        toggleColor: "#1C43B9",
-        bannerText: `We use three kinds of cookies on our websites: required, functional, and advertising. You can choose whether functional and advertising cookies apply. Click on the different cookie categories to find out more about each category and to change the default settings.`,
-        customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
-    }
 
     const banner = createBanner(categorisedCookies, template, domain,consentCookie)
     const bannerContainer = document.createElement('div')
@@ -1086,34 +1094,12 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
-    if (!consentCookie || consentCookie.update == false) {
+    if(consentCookie.update===false){
         toggleBanner('show')
-        if (!consentCookie) {
-            let cookie = {}
-            for (let key of categories) {
-                if (key === 'necessary')
-                    cookie[key] = true
-                else
-                    cookie[key] = false
-            }
-            cookie.update = false
-            document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
-
-            // Push the initial consent state to the data layer
-            window.dataLayer.push({
-                event: 'consent_change',
-                consentState: cookie
-            })
-        }
-        else {
-            window.dataLayer.push({
-                event: 'consent_change',
-                consentState: consentCookie
-            })
-        }
     }
-    else {
+    else{
         toggleBanner('hide')
     }
+
 }
 
