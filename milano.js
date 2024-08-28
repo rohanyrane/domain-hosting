@@ -15,7 +15,7 @@ function getCookieValue(name) {
     return cookie ? cookie.split('=')[1] : null;
 }
 
-function createBanner(categorisedCookies, template) {
+function createBanner(categorisedCookies, template,consentCookie) {
 
     let banner = `
   
@@ -49,7 +49,6 @@ function createBanner(categorisedCookies, template) {
                 <div class="categories-AE1VSVI8T5">`
 
     const categories = Object.keys(categorisedCookies)
-    const cookieConsent = JSON.parse(getCookieValue('privyConsent')) || {};
     categories.forEach(category => {
         const cookieData = (categorisedCookies[category])
         const isChecked=cookieConsent[category] || isNecessary;
@@ -489,7 +488,18 @@ const categorisedCookies = {
     }
 
 }
-function addBanner(){
+
+window.onload = async () => {
+
+    consentButtonDiv = document.createElement('div')
+    consentButtonDiv.className = "consent-button-AE1VSVI8T5"
+    consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
+    document.body.appendChild(consentButtonDiv)
+
+    const url = 'https://www.idfy.com/'
+    const domain = extractDomainName(url)
+    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
+
     const template = {
         bannerType: "banner",
         verticalAlign: "bottom",
@@ -504,7 +514,7 @@ function addBanner(){
         customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
     }
 
-    const banner = createBanner(categorisedCookies, template, domain)
+    const banner = createBanner(categorisedCookies, template, domain,consentCookie)
     const bannerContainer = document.createElement('div')
     bannerContainer.className = "banner-container-AE1VSVI8T5"
     bannerContainer.innerHTML = banner
@@ -1075,20 +1085,6 @@ function addBanner(){
             dropdown.style.display = "none";
             }`
     document.head.appendChild(scriptTag)
-}
-
-window.onload = async () => {
-
-    consentButtonDiv = document.createElement('div')
-    consentButtonDiv.className = "consent-button-AE1VSVI8T5"
-    consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
-    document.body.appendChild(consentButtonDiv)
-
-    const url = 'https://www.idfy.com/'
-    const domain = extractDomainName(url)
-
-    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
-    addBanner()
 
     if (!consentCookie || consentCookie.update == false) {
         toggleBanner('show')
