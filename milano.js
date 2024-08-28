@@ -118,31 +118,17 @@ function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
-    if (agreedCategories == 'all') {
-        Object.keys(cookieConsent).forEach(key=> cookieConsent[key]=true)
-
-    } else if (agreedCategories == 'necessary') {
-        cookieConsent.necessary=true
-        for (let key in cookieConsent) {
-            if (key !== 'necessary') {
-                cookieConsent[key]=false
-            }
-        }
-        agreedCookies.push(agreedCategories)
-    }
-    else if (agreedCategories == "preference") {
-        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked')
-        for (let i = 0; i < checkedBoxes.length; i++) {
-            const categoryName = checkedBoxes[i].id.replace("-toggle", "")
-            agreedCookies.push(categoryName)
-            consent[categoryName] = 1
-            cookieConsent[categoryName]=true
-        }
-        for (let key in cookieConsent) {
-            if (!agreedCookies.includes(key)) {
-                cookieConsent[key]=false
-            }
-        }
+    if (agreedCategories === 'all') {
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = true);
+    } else if (agreedCategories === 'necessary') {
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = key === 'necessary');
+    } else if (agreedCategories === 'preference') {
+        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        checkedBoxes.forEach(box => {
+            const categoryName = box.id.replace('-toggle', '');
+            agreedCookies.push(categoryName);
+            cookieConsent[categoryName] = true;
+        });
     }
 
     cookieConsent.update = true
