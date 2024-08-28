@@ -18,50 +18,12 @@ window.onload = async () => {
     const domain = extractDomainName(url)
 
     let consentVariable = localStorage.getItem('PrivyConsent')
+    let consentCookie=document.cookie('privyConsent')
     consentVariable = JSON.parse(consentVariable)
-
-    ////////////////////////////////////////////////////
-    let cookies = document.cookie;
-
-    if (cookies) {
-        cookies = cookies.split(';').map(cookie => cookie.trim());
-        cookies.forEach(cookie => {
-            const [name] = cookie.split('=');
-            // console.log("name:", name);
-            // eraseCookie(name)
-        });
-
-    }
-
-    function eraseCookie(name) {
-        //Delete root path cookies
-        domainName = window.location.hostname;
-        document.cookie = name + '=; Max-Age=-99999999; Path=/;Domain=' + domainName;
-        document.cookie = name + '=; Max-Age=-99999999; Path=/;';
+    consentCookie=JSON.parse(consentCookie)
 
 
-        //current path of the page
-        pathArray = window.location.pathname.split('/');
-        //delete potential cookies at each path.
-        for (var i = 0; i < pathArray.length; i++) {
-            if (pathArray[i]) {
-                //Build the path string from the Path Array e.g /site/login
-                var currentPath = pathArray.slice(0, i + 1).join('/');
-                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + ';Domain=' + domainName;
-                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + ';';
-                //Maybe path has a trailing slash!
-                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;Domain=' + domainName;
-                document.cookie = name + '=; Max-Age=-99999999; Path=' + currentPath + '/;';
-
-            }
-        }
-
-    }
-
-
-    /////////////////////////////////////////////////////
-
-    // if (!consentVariable || consentVariable.update == 0) {
+    // if (!consentVariable || consentVariable.update == 0 || !consentCookie) {
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -399,29 +361,36 @@ window.onload = async () => {
     }
     const categories = Object.keys(categorisedCookies)
 
-    if (!consentVariable) {
+    if (!consentVariable || !consentCookie) {
         let consent = {};
+        let cookie={}
         for (let key of categories) {
             if (key === 'necessary') {
                 consent[key] = 1;
+                cookie[key]=true
             } else {
                 consent[key] = 0;
+                cookie[key]=false
             }
         }
         consent.update = 0
+        cookie.update=0
 
         consent = JSON.stringify(consent)
+        cookie=JSON.stringify(cookie)
         localStorage.setItem('PrivyConsent', consent)
+        document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
+
         // Push the initial consent state to the data layer
         window.dataLayer.push({
             event: 'consent_change',
-            consentState: consent
+            consentState: cookie
         })
     }
     else {
         window.dataLayer.push({
             event: 'consent_change',
-            consentState: consentVariable
+            consentState: consentCookie
         })
     }
 
@@ -1122,19 +1091,24 @@ function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     const head = document.head
     let consent = localStorage.getItem('PrivyConsent')
+    let cookieConsent=document.cookie('privyConsent')
     consent = JSON.parse(consent)
+    cookieConsent=JSON.parse(cookieConsent)
 
     if (agreedCategories == 'all') {
         // agreedCookies.push(categories)
         for (let key in consent) {
             consent[key] = 1
+            cookieConsent[key]=true
         }
 
     } else if (agreedCategories == 'necessary') {
         consent.necessary = 1
+        cookieConsent.necessary=true
         for (let key in consent) {
             if (key !== 'necessary') {
                 consent[key] = 0
+                cookieConsent[key]=false
             }
         }
         agreedCookies.push(agreedCategories)
@@ -1145,33 +1119,37 @@ function submitConsent(agreedCategories, domain) {
             const categoryName = checkedBoxes[i].id.replace("-toggle", "")
             agreedCookies.push(categoryName)
             consent[categoryName] = 1
+            cookieConsent[categoryName]=true
         }
         for (let key in consent) {
             if (!agreedCookies.includes(key)) {
                 consent[key] = 0
+                cookieConsent[key]=false
             }
         }
     }
 
-    const consentCookie = {}
-    const keys = Object.keys(consent)
-    keys.forEach((key)=>{
-        if(consent[key]===1)
-        consentCookie[key]=true
-        else
-        consentCookie[key]=false
-    })
+    // const consentCookie = {}
+    // const keys = Object.keys(consent)
+    // keys.forEach((key)=>{
+    //     if(consent[key]===1)
+    //     consentCookie[key]=true
+    //     else
+    //     consentCookie[key]=false
+    // })
 
     consent.update = 1
+    consentCookie.update=true
     consent = JSON.stringify(consent)
+    consentCookie=JSON.stringify(consentCookie)
     localStorage.setItem('PrivyConsent', consent)
-    document.cookie = `privyConsent=${JSON.stringify(consentCookie)}; path=/`;
+    document.cookie = `privyConsent=${consentCookie}; path=/`;
 
 
     // Push the updated consent state to the data layer
     window.dataLayer.push({
         event: 'consent_change',
-        consentState: consent
+        consentState: consentCookie
     })
 
 
