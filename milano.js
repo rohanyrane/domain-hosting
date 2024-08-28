@@ -123,18 +123,19 @@ function submitConsent(agreedCategories, domain) {
     } else if (agreedCategories === 'necessary') {
         Object.keys(cookieConsent).forEach(key => cookieConsent[key] = key === 'necessary');
     } else if (agreedCategories === 'preference') {
+        console.log("anssknkfdnk");
         const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
         checkedBoxes.forEach(box => {
             const categoryName = box.id.replace('-toggle', '');
             agreedCookies.push(categoryName);
             cookieConsent[categoryName] = true;
         });
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
     }
 
     cookieConsent.update = true
-    document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
-
     toggleBanner('hide')
+    document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
 }
 
 function toggleBanner(action) {
