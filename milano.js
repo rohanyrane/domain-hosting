@@ -160,6 +160,10 @@ function toggleBanner(action) {
   }
 
 window.onload = async () => {
+    consentButtonDiv=document.createElement('div')
+    consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
+    document.body.appendChild(consentButtonDiv)
+
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
@@ -542,11 +546,6 @@ window.onload = async () => {
         bannerText: `We use three kinds of cookies on our websites: required, functional, and advertising. You can choose whether functional and advertising cookies apply. Click on the different cookie categories to find out more about each category and to change the default settings.`,
         customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
     }
-
-    consentButtonDiv=document.createElement('div')
-    consentButtonDiv.className = "consent-button-AE1VSVI8T5"
-    consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
-    document.body.appendChild(consentButtonDiv)
 
     const banner = createBanner(categorisedCookies, template, domain)
     const bannerContainer = document.createElement('div')
