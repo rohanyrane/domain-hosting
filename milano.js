@@ -133,7 +133,7 @@ function submitConsent(agreedCategories, domain) {
         Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
     }
 
-    cookieConsent.update=true
+    cookieConsent.update = true
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
 
     // Push the updated consent state to the data layer
@@ -142,28 +142,21 @@ function submitConsent(agreedCategories, domain) {
         consentState: cookieConsent
     })
     toggleBanner('hide')
-    // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
-    // customizeScreen.style.display = "none"
-    // const bannerHome = document.getElementById("banner-home")
-    // bannerHome.style.display = "none"
-
 }
 
 function toggleBanner(action) {
-    if(action==='show'){
+    if (action === 'show') {
         const element = document.getElementById('banner-home').style.display = ''
-        // console.log("object",element);
-        
     }
-    else{
-        document.getElementById("customize-screen-AE1VSVI8T5").style.display='none'
+    else if (action === 'hide') {
+        document.getElementById("customize-screen-AE1VSVI8T5").style.display = 'none'
         document.getElementById('banner-home').style.display = 'none'
     }
-  }
+}
 
 window.onload = async () => {
 
-    consentButtonDiv=document.createElement('div')
+    consentButtonDiv = document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
@@ -507,34 +500,7 @@ window.onload = async () => {
 
     }
     const categories = Object.keys(categorisedCookies)
-    
-    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
-    if (!consentCookie || consentCookie.update == false) {
 
-    if (!consentCookie) {
-        let cookie={}
-        for (let key of categories) {
-            if (key === 'necessary') 
-            cookie[key]=true
-            else 
-            cookie[key]=false
-        }
-        cookie.update=false
-        document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
-
-        // Push the initial consent state to the data layer
-        window.dataLayer.push({
-            event: 'consent_change',
-            consentState: cookie
-        })
-    }
-    else {
-        window.dataLayer.push({
-            event: 'consent_change',
-            consentState: consentCookie
-        })
-    }
-}
 
     const template = {
         bannerType: "banner",
@@ -1122,6 +1088,35 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
+    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
+    if (!consentCookie || consentCookie.update == false) {
+        toggleBanner('show')
+        if (!consentCookie) {
+            let cookie = {}
+            for (let key of categories) {
+                if (key === 'necessary')
+                    cookie[key] = true
+                else
+                    cookie[key] = false
+            }
+            cookie.update = false
+            document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
 
+            // Push the initial consent state to the data layer
+            window.dataLayer.push({
+                event: 'consent_change',
+                consentState: cookie
+            })
+        }
+        else {
+            window.dataLayer.push({
+                event: 'consent_change',
+                consentState: consentCookie
+            })
+        }
+    }
+    else {
+        toggleBanner('hide')
+    }
 }
 
