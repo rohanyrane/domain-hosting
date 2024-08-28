@@ -119,9 +119,7 @@ function submitConsent(agreedCategories, domain) {
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
     if (agreedCategories == 'all') {
-        for (let key in cookieConsent) {
-            cookieConsent[key]=true
-        }
+        Object.keys(cookieConsent).forEach(key=> cookieConsent[key]=true)
 
     } else if (agreedCategories == 'necessary') {
         cookieConsent.necessary=true
