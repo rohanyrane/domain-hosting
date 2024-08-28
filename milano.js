@@ -1097,7 +1097,8 @@ function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     const head = document.head
     let consent = localStorage.getItem('PrivyConsent')
-    let cookieConsent=document.cookie('privyConsent')
+    let cookieConsent=getCookieValue('privyConsent');
+
     consent = JSON.parse(consent)
     cookieConsent=JSON.parse(cookieConsent)
 
