@@ -151,7 +151,9 @@ function submitConsent(agreedCategories, domain) {
 
 function toggleBanner(action) {
     if(action==='show'){
-        document.getElementById('banner-home').style.display = 'block'
+        const element = document.getElementById('banner-home')
+        console.log("object",element);
+        element.style.display = ''
     }
     else{
         document.getElementById("customize-screen-AE1VSVI8T5").style.display='none'
@@ -169,7 +171,6 @@ window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
-    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -506,7 +507,8 @@ window.onload = async () => {
 
     }
     const categories = Object.keys(categorisedCookies)
-
+    
+    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
     if (!consentCookie || consentCookie.update == false) {
 
     if (!consentCookie) {
