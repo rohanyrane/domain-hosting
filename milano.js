@@ -161,6 +161,7 @@ function toggleBanner(action) {
 
 window.onload = async () => {
     consentButtonDiv=document.createElement('div')
+    consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
 
