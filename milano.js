@@ -1146,7 +1146,7 @@ function submitConsent(agreedCategories, domain) {
     // Push the updated consent state to the data layer
     window.dataLayer.push({
         event: 'consent_change',
-        consentState: consentCookie
+        consentState: cookieConsent
     })
 
 
