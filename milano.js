@@ -51,7 +51,7 @@ function createBanner(categorisedCookies, template,consentCookie) {
     const categories = Object.keys(categorisedCookies)
     categories.forEach(category => {
         const cookieData = (categorisedCookies[category])
-        const isChecked=cookieConsent[category] || isNecessary;
+        const isChecked=consentCookie[category] || isNecessary;
         const isNecessary = category === "necessary";
         const disabledClass = isNecessary ? 'disabled' : '';
         banner += `
