@@ -543,8 +543,11 @@ window.onload = async () => {
         customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
     }
 
-    const consentChangeButton=`    <button onclick="toggleBanner('show')">change consent</button>    `
-    document.body.appendChild(consentChangeButton)
+    consnetButtonDiv=document.createElement('div')
+    consnetButtonDiv.className = "consent-button-AE1VSVI8T5"
+    bannerContainer.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
+    document.body.appendChild(consnetButtonDiv)
+
     const banner = createBanner(categorisedCookies, template, domain)
     const bannerContainer = document.createElement('div')
     bannerContainer.className = "banner-container-AE1VSVI8T5"
