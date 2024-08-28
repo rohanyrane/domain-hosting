@@ -23,10 +23,8 @@ window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
-    let consentVariable = localStorage.getItem('PrivyConsent')
-    let consentCookie = getCookieValue('privyConsent');
-    consentVariable = JSON.parse(consentVariable)
-    consentCookie=JSON.parse(consentCookie)
+    let consentVariable = JSON.parse(localStorage.getItem('PrivyConsent'))
+    let consentCookie = JSON.parse(getCookieValue('privyConsent'))
 
 
     // if (!consentVariable || consentVariable.update == 0 || !consentCookie) {
@@ -380,11 +378,9 @@ window.onload = async () => {
             }
         }
         consent.update = 0
-        cookie.update=0
+        cookie.update=false
 
-        consent = JSON.stringify(consent)
-        cookie=JSON.stringify(cookie)
-        localStorage.setItem('PrivyConsent', consent)
+        localStorage.setItem('PrivyConsent', JSON.stringify(consent));
         document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
 
         // Push the initial consent state to the data layer
@@ -1096,11 +1092,8 @@ function createBanner(categorisedCookies, template) {
 function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     const head = document.head
-    let consent = localStorage.getItem('PrivyConsent')
-    let cookieConsent=getCookieValue('privyConsent');
-
-    consent = JSON.parse(consent)
-    cookieConsent=JSON.parse(cookieConsent)
+    let consent = JSON.parse(localStorage.getItem('PrivyConsent'));
+    let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
     if (agreedCategories == 'all') {
         for (let key in consent) {
@@ -1137,10 +1130,8 @@ function submitConsent(agreedCategories, domain) {
 
     consent.update = 1
     cookieConsent.update=true
-    consent = JSON.stringify(consent)
-    cookieConsent=JSON.stringify(cookieConsent)
-    localStorage.setItem('PrivyConsent', consent)
-    document.cookie = `privyConsent=${cookieConsent}; path=/`;
+    localStorage.setItem('PrivyConsent', JSON.stringify(consent));
+    document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
 
 
     // Push the updated consent state to the data layer
