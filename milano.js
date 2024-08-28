@@ -1,15 +1,11 @@
-
 function extractDomainName(url) {
-    const string =
-        /^(?:https?:\/\/)?(?:www\.)?([a-z0-9]+(?:[.-][a-z0-9]+)*\.[a-z]{2,})(?:\/|$)/
-    const match = string.exec(url)
     try {
-        const domainParts = match[1].split('.')
-        const domainSegments = domainParts.slice(-2)
-        const domain = domainSegments.join('.')
-        return domain
+        const regex = /^(?:https?:\/\/)?(?:www\.)?([a-z0-9]+(?:[.-][a-z0-9]+)*\.[a-z]{2,})(?:\/|$)/;
+        const match = regex.exec(url);
+        const domainParts = match[1].split('.');
+        return domainParts.slice(-2).join('.');
     } catch (error) {
-        return 'Error_Domain'
+        return 'Error_Domain';
     }
 }
 
@@ -18,6 +14,150 @@ function getCookieValue(name) {
     const cookie = cookies.find(cookie => cookie.startsWith(`${name}=`));
     return cookie ? cookie.split('=')[1] : null;
 }
+
+function createBanner(categorisedCookies, template) {
+
+    let banner = `
+  
+  <div class="idfy-${template.bannerType}-AE1VSVI8T5" id="banner-home">
+    <div class="banner-content-AE1VSVI8T5">
+        <h2 class="banner-heading-AE1VSVI8T5">Cookie Notice</h2>
+        <div class="${template.bannerType}-inner-AE1VSVI8T5">
+        <p class="description-AE1VSVI8T5 ${template.bannerType}-desc-AE1VSVI8T5" >${template.bannerText}</p>
+          <div class="${template.bannerType}-button-container-AE1VSVI8T5">
+              <button onclick="submitConsent('all')" id="allow-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Allow all</button>
+              <button onclick="submitConsent('necessary')" class="${template.bannerType}-button-AE1VSVI8T5">Allow only Necessary</button>
+              <button id="customize-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Customize Settings</button>
+          </div>
+        </div>
+    </div>
+    <div class="powered-AE1VSVI8T5" style="border-radius:0px 0px 10px 10px;">
+    Powered by <span><a href="https://www.privyone.com/" target="_blank">PRIVY</a></span>
+    </div>
+  </div>
+  
+  
+  <div id="customize-screen-AE1VSVI8T5">
+    <div class="customize-settings-screen-AE1VSVI8T5">
+        <div>
+            <div class="close-btn-AE1VSVI8T5">
+                <button class="close-button-AE1VSVI8T5">×</button>
+            </div>
+            <div class="content-AE1VSVI8T5">
+                <h2 class="box-heading-AE1VSVI8T5">About cookies on this site.</h2>
+                <p class="box-description-AE1VSVI8T5">${template.customizeDescription}</p>
+                <div class="categories-AE1VSVI8T5">`
+
+    const categories = Object.keys(categorisedCookies)
+    categories.forEach(category => {
+        const cookieData = (categorisedCookies[category])
+
+        const isNecessary = category === "necessary";
+        const disabledClass = isNecessary ? 'disabled' : '';
+        banner += `
+                    <div class="category-AE1VSVI8T5">
+                        <div class="category-header-AE1VSVI8T5">
+                            <div onclick="showDropdown('${category}')" style="cursor:pointer">
+  
+                                <button class="dropdown-arrow-AE1VSVI8T5 rotated-AE1VSVI8T5 dropdown-arrow-${category}">^</button>
+  
+                                <label for="${category}">${category.charAt(0).toUpperCase() + category.slice(1)} Cookies
+                                </label>
+                            </div>
+                            <input type="checkbox" id="${category}-toggle" class="toggle-switch-AE1VSVI8T5" ${isNecessary ? 'checked disabled' : ''} ${disabledClass}>
+                            <label for="${category}-toggle" class="toggle-label-AE1VSVI8T5 ${disabledClass}"></label>
+                        </div>
+                        <div id="dropdown-${category}" class="dropdown-content-AE1VSVI8T5">
+                            <div class="category-description-AE1VSVI8T5">
+                                ${cookieData.description}
+                            </div>
+                            <div onclick="viewCookies('${category}')" id="view-cookies-${category}" class="view-cookies-AE1VSVI8T5">View Cookies</div>
+                        </div>
+                        <div class="show-cookies-AE1VSVI8T5 show-cookies-AE1VSVI8T5-${category}">
+                          <div id= "all-cookies-AE1VSVI8T5-${category}" class="all-cookies-AE1VSVI8T5">
+  `
+        cookieData.data.forEach(cookie => {
+            banner += `            
+                            <div class="cookie-AE1VSVI8T5">
+                                <p class="cookie-name-AE1VSVI8T5"><span> Name </span>:
+                                    ${cookie.cookie_name}</p>
+                                <p class="platform-AE1VSVI8T5"><span>Platform </span>: ${cookie.platform}</p>
+                            </div>
+  `
+        })
+        banner += `</div>
+              </div>
+            </div>`
+
+    })
+
+    banner += `
+  
+                </div>
+            </div>
+        </div>
+  
+        <div class="bottom-panel-AE1VSVI8T5">
+            <div class="preference-button-AE1VSVI8T5">
+                <button onclick="submitConsent('preference')" class="button1-AE1VSVI8T5">Save my Preferences</button>
+                <button onclick="submitConsent('necessary')" class="button2-AE1VSVI8T5">Allow only Necessary</button>
+            </div>
+            <div class="powered-AE1VSVI8T5">
+                Powered by <span><a href="https://www.privyone.com/" target="_blank">PRIVY</a></span>
+            </div>
+        </div>
+  
+    </div>
+  </div>
+  
+  `
+    return banner
+}
+
+
+function submitConsent(agreedCategories, domain) {
+    const agreedCookies = []
+    let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
+
+    if (agreedCategories === 'all') {
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = true);
+    } else if (agreedCategories === 'necessary') {
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = key === 'necessary');
+    } else if (agreedCategories === 'preference') {
+        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        checkedBoxes.forEach(box => {
+            const categoryName = box.id.replace('-toggle', '');
+            agreedCookies.push(categoryName);
+            cookieConsent[categoryName] = true;
+        });
+        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
+    }
+
+    cookieConsent.update=true
+    document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
+
+    // Push the updated consent state to the data layer
+    window.dataLayer.push({
+        event: 'consent_change',
+        consentState: cookieConsent
+    })
+    toggleBanner('hide')
+    // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
+    // customizeScreen.style.display = "none"
+    // const bannerHome = document.getElementById("banner-home")
+    // bannerHome.style.display = "none"
+
+}
+
+function toggleBanner(action) {
+    if(action==='show'){
+        document.getElementById('banner-home').style.display = 'block'
+    }
+    else{
+        document.getElementById("customize-screen-AE1VSVI8T5").style.display='none'
+        document.getElementById('banner-home').style.display = 'none'
+    }
+  }
 
 window.onload = async () => {
     const url = 'https://www.idfy.com/'
@@ -403,6 +543,8 @@ window.onload = async () => {
         customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
     }
 
+    const consentChangeButton=`    <button onclick="toggleBanner('show')">change consent</button>    `
+    document.body.appendChild(consentChangeButton)
     const banner = createBanner(categorisedCookies, template, domain)
     const bannerContainer = document.createElement('div')
     bannerContainer.className = "banner-container-AE1VSVI8T5"
@@ -978,161 +1120,4 @@ window.onload = async () => {
 // }
 
 }
-
-
-function createBanner(categorisedCookies, template) {
-
-    let banner = `
-  
-  <div class="idfy-${template.bannerType}-AE1VSVI8T5" id="banner-home">
-    <div class="banner-content-AE1VSVI8T5">
-        <h2 class="banner-heading-AE1VSVI8T5">Cookie Notice</h2>
-        <div class="${template.bannerType}-inner-AE1VSVI8T5">
-        <p class="description-AE1VSVI8T5 ${template.bannerType}-desc-AE1VSVI8T5" >${template.bannerText}</p>
-          <div class="${template.bannerType}-button-container-AE1VSVI8T5">
-              <button onclick="submitConsent('all')" id="allow-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Allow all</button>
-              <button onclick="submitConsent('necessary')" class="${template.bannerType}-button-AE1VSVI8T5">Allow only Necessary</button>
-              <button id="customize-btn-AE1VSVI8T5" class="${template.bannerType}-button-AE1VSVI8T5">Customize Settings</button>
-          </div>
-        </div>
-    </div>
-    <div class="powered-AE1VSVI8T5" style="border-radius:0px 0px 10px 10px;">
-    Powered by <span><a href="https://www.privyone.com/" target="_blank">PRIVY</a></span>
-    </div>
-  </div>
-  
-  
-  <div id="customize-screen-AE1VSVI8T5">
-    <div class="customize-settings-screen-AE1VSVI8T5">
-        <div>
-            <div class="close-btn-AE1VSVI8T5">
-                <button class="close-button-AE1VSVI8T5">×</button>
-            </div>
-            <div class="content-AE1VSVI8T5">
-                <h2 class="box-heading-AE1VSVI8T5">About cookies on this site.</h2>
-                <p class="box-description-AE1VSVI8T5">${template.customizeDescription}</p>
-                <div class="categories-AE1VSVI8T5">`
-
-    const categories = Object.keys(categorisedCookies)
-    categories.forEach(category => {
-        const cookieData = (categorisedCookies[category])
-
-        const isNecessary = category === "necessary";
-        const disabledClass = isNecessary ? 'disabled' : '';
-        banner += `
-                    <div class="category-AE1VSVI8T5">
-                        <div class="category-header-AE1VSVI8T5">
-                            <div onclick="showDropdown('${category}')" style="cursor:pointer">
-  
-                                <button class="dropdown-arrow-AE1VSVI8T5 rotated-AE1VSVI8T5 dropdown-arrow-${category}">^</button>
-  
-                                <label for="${category}">${category.charAt(0).toUpperCase() + category.slice(1)} Cookies
-                                </label>
-                            </div>
-                            <input type="checkbox" id="${category}-toggle" class="toggle-switch-AE1VSVI8T5" ${isNecessary ? 'checked disabled' : ''} ${disabledClass}>
-                            <label for="${category}-toggle" class="toggle-label-AE1VSVI8T5 ${disabledClass}"></label>
-                        </div>
-                        <div id="dropdown-${category}" class="dropdown-content-AE1VSVI8T5">
-                            <div class="category-description-AE1VSVI8T5">
-                                ${cookieData.description}
-                            </div>
-                            <div onclick="viewCookies('${category}')" id="view-cookies-${category}" class="view-cookies-AE1VSVI8T5">View Cookies</div>
-                        </div>
-                        <div class="show-cookies-AE1VSVI8T5 show-cookies-AE1VSVI8T5-${category}">
-                          <div id= "all-cookies-AE1VSVI8T5-${category}" class="all-cookies-AE1VSVI8T5">
-  `
-        cookieData.data.forEach(cookie => {
-            banner += `            
-                            <div class="cookie-AE1VSVI8T5">
-                                <p class="cookie-name-AE1VSVI8T5"><span> Name </span>:
-                                    ${cookie.cookie_name}</p>
-                                <p class="platform-AE1VSVI8T5"><span>Platform </span>: ${cookie.platform}</p>
-                            </div>
-  `
-        })
-        banner += `</div>
-              </div>
-            </div>`
-
-    })
-
-    banner += `
-  
-                </div>
-            </div>
-        </div>
-  
-        <div class="bottom-panel-AE1VSVI8T5">
-            <div class="preference-button-AE1VSVI8T5">
-                <button onclick="submitConsent('preference')" class="button1-AE1VSVI8T5">Save my Preferences</button>
-                <button onclick="submitConsent('necessary')" class="button2-AE1VSVI8T5">Allow only Necessary</button>
-            </div>
-            <div class="powered-AE1VSVI8T5">
-                Powered by <span><a href="https://www.privyone.com/" target="_blank">PRIVY</a></span>
-            </div>
-        </div>
-  
-    </div>
-  </div>
-  
-  `
-    return banner
-
-}
-
-
-function submitConsent(agreedCategories, domain) {
-    const agreedCookies = []
-    const head = document.head
-    let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
-
-    if (agreedCategories == 'all') {
-        for (let key in cookieConsent) {
-            cookieConsent[key]=true
-        }
-
-    } else if (agreedCategories == 'necessary') {
-        cookieConsent.necessary=true
-        for (let key in cookieConsent) {
-            if (key !== 'necessary') {
-                cookieConsent[key]=false
-            }
-        }
-        agreedCookies.push(agreedCategories)
-    }
-    else if (agreedCategories == "preference") {
-        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked')
-        for (let i = 0; i < checkedBoxes.length; i++) {
-            const categoryName = checkedBoxes[i].id.replace("-toggle", "")
-            agreedCookies.push(categoryName)
-            cookieConsent[categoryName]=true
-        }
-        for (let key in cookieConsent) {
-            if (!agreedCookies.includes(key)) {
-                cookieConsent[key]=false
-            }
-        }
-    }
-
-    cookieConsent.update=true
-    document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
-
-    // Push the updated consent state to the data layer
-    window.dataLayer.push({
-        event: 'consent_change',
-        consentState: cookieConsent
-    })
-
-
-    // const customizeScreen = document.getElementById("customize-screen-AE1VSVI8T5")
-    // customizeScreen.style.display = "none"
-    // const bannerHome = document.getElementById("banner-home")
-    // bannerHome.style.display = "none"
-
-}
-
-
-
-
-
 
