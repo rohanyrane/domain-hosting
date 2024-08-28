@@ -49,9 +49,10 @@ function createBanner(categorisedCookies, template) {
                 <div class="categories-AE1VSVI8T5">`
 
     const categories = Object.keys(categorisedCookies)
+    const cookieConsent = JSON.parse(getCookieValue('privyConsent')) || {};
     categories.forEach(category => {
         const cookieData = (categorisedCookies[category])
-
+        const isChecked=cookieConsent[category] || isNecessary;
         const isNecessary = category === "necessary";
         const disabledClass = isNecessary ? 'disabled' : '';
         banner += `
@@ -64,7 +65,7 @@ function createBanner(categorisedCookies, template) {
                                 <label for="${category}">${category.charAt(0).toUpperCase() + category.slice(1)} Cookies
                                 </label>
                             </div>
-                            <input type="checkbox" id="${category}-toggle" class="toggle-switch-AE1VSVI8T5" ${isNecessary ? 'checked disabled' : ''} ${disabledClass}>
+                            <input type="checkbox" id="${category}-toggle" class="toggle-switch-AE1VSVI8T5" ${isChecked ? 'checked' : ''} ${disabledClass}>
                             <label for="${category}-toggle" class="toggle-label-AE1VSVI8T5 ${disabledClass}"></label>
                         </div>
                         <div id="dropdown-${category}" class="dropdown-content-AE1VSVI8T5">
@@ -489,7 +490,6 @@ const categorisedCookies = {
 
 }
 function addBanner(){
-
     const template = {
         bannerType: "banner",
         verticalAlign: "bottom",
@@ -1087,8 +1087,8 @@ window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
-    addBanner()
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
+    addBanner()
 
     if (!consentCookie || consentCookie.update == false) {
         toggleBanner('show')
