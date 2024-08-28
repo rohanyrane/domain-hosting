@@ -15,7 +15,7 @@ function getCookieValue(name) {
     return cookie ? cookie.split('=')[1] : null;
 }
 
-function createBanner(categorisedCookies, template,consentCookie) {
+function createBanner(categorisedCookies, template, consentCookie) {
 
     let banner = `
   
@@ -52,7 +52,7 @@ function createBanner(categorisedCookies, template,consentCookie) {
     categories.forEach(category => {
         const cookieData = (categorisedCookies[category])
         const isNecessary = category === "necessary";
-        const isChecked=consentCookie[category] || isNecessary;
+        const isChecked = consentCookie[category] || isNecessary;
         const disabledClass = isNecessary ? 'disabled' : '';
         banner += `
                     <div class="category-AE1VSVI8T5">
@@ -118,18 +118,33 @@ function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
-    if (agreedCategories === 'all') {
-        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = true);
-    } else if (agreedCategories === 'necessary') {
-        Object.keys(cookieConsent).forEach(key => cookieConsent[key] = key === 'necessary');
-    } else if (agreedCategories === 'preference') {
-        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        checkedBoxes.forEach(box => {
-            const categoryName = box.id.replace('-toggle', '');
-            agreedCookies.push(categoryName);
-            cookieConsent[categoryName] = true;
-        });
-        // Object.keys(cookieConsent).forEach(key => cookieConsent[key] = agreedCookies.includes(key));
+    if (agreedCategories == 'all') {
+        for (let key in cookieConsent) {
+            cookieConsent[key]=true
+        }
+
+    } else if (agreedCategories == 'necessary') {
+        cookieConsent.necessary=true
+        for (let key in cookieConsent) {
+            if (key !== 'necessary') {
+                cookieConsent[key]=false
+            }
+        }
+        agreedCookies.push(agreedCategories)
+    }
+    else if (agreedCategories == "preference") {
+        const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked')
+        for (let i = 0; i < checkedBoxes.length; i++) {
+            const categoryName = checkedBoxes[i].id.replace("-toggle", "")
+            agreedCookies.push(categoryName)
+            consent[categoryName] = 1
+            cookieConsent[categoryName]=true
+        }
+        for (let key in cookieConsent) {
+            if (!agreedCookies.includes(key)) {
+                cookieConsent[key]=false
+            }
+        }
     }
 
     cookieConsent.update = true
@@ -505,24 +520,24 @@ window.onload = async () => {
     const categories = Object.keys(categorisedCookies)
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
     if (!consentCookie) {
-        // toggleBanner('show')
-            let cookie = {}
-            for (let key of categories) {
-                if (key === 'necessary')
-                    cookie[key] = true
-                else
-                    cookie[key] = false
-            }
-            cookie.update = false
-            document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
+        let cookie = {}
+        for (let key of categories) {
+            if (key === 'necessary')
+                cookie[key] = true
+            else
+                cookie[key] = false
         }
+        cookie.update = false
+        document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
+    }
+    consentCookie = JSON.parse(getCookieValue('privyConsent'))
 
     consentButtonDiv = document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
 
-    const banner = createBanner(categorisedCookies, template, domain,consentCookie)
+    const banner = createBanner(categorisedCookies, template, domain, consentCookie)
     const bannerContainer = document.createElement('div')
     bannerContainer.className = "banner-container-AE1VSVI8T5"
     bannerContainer.innerHTML = banner
@@ -1094,10 +1109,10 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
-    if(consentCookie.update===false){
+    if (consentCookie.update === false) {
         toggleBanner('show')
     }
-    else{
+    else {
         toggleBanner('hide')
     }
 
