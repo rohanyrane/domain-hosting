@@ -13,12 +13,18 @@ function extractDomainName(url) {
     }
 }
 
+function getCookieValue(name) {
+    const cookies = document.cookie.split('; ');
+    const cookie = cookies.find(cookie => cookie.startsWith(`${name}=`));
+    return cookie ? cookie.split('=')[1] : null;
+}
+
 window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
     let consentVariable = localStorage.getItem('PrivyConsent')
-    let consentCookie=document.cookie('privyConsent')
+    let consentCookie = getCookieValue('privyConsent');
     consentVariable = JSON.parse(consentVariable)
     consentCookie=JSON.parse(consentCookie)
 
