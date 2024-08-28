@@ -160,6 +160,7 @@ function toggleBanner(action) {
   }
 
 window.onload = async () => {
+
     consentButtonDiv=document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
@@ -169,8 +170,6 @@ window.onload = async () => {
     const domain = extractDomainName(url)
 
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
-
-    if (!consentCookie || consentCookie.update == false) {
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -508,14 +507,15 @@ window.onload = async () => {
     }
     const categories = Object.keys(categorisedCookies)
 
+    if (!consentCookie || consentCookie.update == false) {
+
     if (!consentCookie) {
         let cookie={}
         for (let key of categories) {
-            if (key === 'necessary') {
-                cookie[key]=true
-            } else {
-                cookie[key]=false
-            }
+            if (key === 'necessary') 
+            cookie[key]=true
+            else 
+            cookie[key]=false
         }
         cookie.update=false
         document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
@@ -532,7 +532,7 @@ window.onload = async () => {
             consentState: consentCookie
         })
     }
-
+}
 
     const template = {
         bannerType: "banner",
@@ -1120,7 +1120,6 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
-}
 
 }
 
