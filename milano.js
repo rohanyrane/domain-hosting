@@ -165,7 +165,7 @@ window.onload = async () => {
 
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
 
-    // if (!consentCookie || consentCookie.update == false) {
+    if (!consentCookie || consentCookie.update == false) {
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -1120,7 +1120,7 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
-// }
+}
 
 }
 
