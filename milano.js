@@ -151,9 +151,9 @@ function submitConsent(agreedCategories, domain) {
 
 function toggleBanner(action) {
     if(action==='show'){
-        const element = document.getElementById('banner-home')
-        console.log("object",element);
-        element.style.display = ''
+        const element = document.getElementById('banner-home').style.display = ''
+        // console.log("object",element);
+        
     }
     else{
         document.getElementById("customize-screen-AE1VSVI8T5").style.display='none'
