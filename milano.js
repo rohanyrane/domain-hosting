@@ -23,11 +23,9 @@ window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
 
-    let consentVariable = JSON.parse(localStorage.getItem('PrivyConsent'))
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
 
-
-    // if (!consentVariable || consentVariable.update == 0 || !consentCookie) {
+    // if (!consentCookie || consentCookie.update == false) {
     const categorisedCookies = {
         necessary: {
             "data": [
@@ -365,22 +363,16 @@ window.onload = async () => {
     }
     const categories = Object.keys(categorisedCookies)
 
-    if (!consentVariable || !consentCookie) {
-        let consent = {};
+    if (!consentCookie) {
         let cookie={}
         for (let key of categories) {
             if (key === 'necessary') {
-                consent[key] = 1;
                 cookie[key]=true
             } else {
-                consent[key] = 0;
                 cookie[key]=false
             }
         }
-        consent.update = 0
         cookie.update=false
-
-        localStorage.setItem('PrivyConsent', JSON.stringify(consent));
         document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
 
         // Push the initial consent state to the data layer
@@ -1092,21 +1084,17 @@ function createBanner(categorisedCookies, template) {
 function submitConsent(agreedCategories, domain) {
     const agreedCookies = []
     const head = document.head
-    let consent = JSON.parse(localStorage.getItem('PrivyConsent'));
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
     if (agreedCategories == 'all') {
-        for (let key in consent) {
-            consent[key] = 1
+        for (let key in cookieConsent) {
             cookieConsent[key]=true
         }
 
     } else if (agreedCategories == 'necessary') {
-        consent.necessary = 1
         cookieConsent.necessary=true
-        for (let key in consent) {
+        for (let key in cookieConsent) {
             if (key !== 'necessary') {
-                consent[key] = 0
                 cookieConsent[key]=false
             }
         }
@@ -1117,22 +1105,17 @@ function submitConsent(agreedCategories, domain) {
         for (let i = 0; i < checkedBoxes.length; i++) {
             const categoryName = checkedBoxes[i].id.replace("-toggle", "")
             agreedCookies.push(categoryName)
-            consent[categoryName] = 1
             cookieConsent[categoryName]=true
         }
-        for (let key in consent) {
+        for (let key in cookieConsent) {
             if (!agreedCookies.includes(key)) {
-                consent[key] = 0
                 cookieConsent[key]=false
             }
         }
     }
 
-    consent.update = 1
     cookieConsent.update=true
-    localStorage.setItem('PrivyConsent', JSON.stringify(consent));
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
-
 
     // Push the updated consent state to the data layer
     window.dataLayer.push({
