@@ -1103,7 +1103,6 @@ function submitConsent(agreedCategories, domain) {
     cookieConsent=JSON.parse(cookieConsent)
 
     if (agreedCategories == 'all') {
-        // agreedCookies.push(categories)
         for (let key in consent) {
             consent[key] = 1
             cookieConsent[key]=true
@@ -1136,21 +1135,12 @@ function submitConsent(agreedCategories, domain) {
         }
     }
 
-    // const consentCookie = {}
-    // const keys = Object.keys(consent)
-    // keys.forEach((key)=>{
-    //     if(consent[key]===1)
-    //     consentCookie[key]=true
-    //     else
-    //     consentCookie[key]=false
-    // })
-
     consent.update = 1
-    consentCookie.update=true
+    cookieConsent.update=true
     consent = JSON.stringify(consent)
-    consentCookie=JSON.stringify(consentCookie)
+    cookieConsent=JSON.stringify(cookieConsent)
     localStorage.setItem('PrivyConsent', consent)
-    document.cookie = `privyConsent=${consentCookie}; path=/`;
+    document.cookie = `privyConsent=${cookieConsent}; path=/`;
 
 
     // Push the updated consent state to the data layer
