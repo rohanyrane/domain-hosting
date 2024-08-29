@@ -134,7 +134,7 @@ function submitConsent(agreedCategories, domain) {
     cookieConsent.update = true
     toggleBanner('hide')
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
-    localStorage.setItem("privyConsent",consentCookie)
+    localStorage.setItem("privyConsent",cookieConsent)
 }
 
 function toggleBanner(action) {
@@ -513,7 +513,7 @@ window.onload = async () => {
         }
         cookie.update = false
         document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
-        localStorage.setItem("privyConsent",consentCookie)
+        localStorage.setItem("privyConsent",JSON.stringify(cookie))
     }
     consentCookie = JSON.parse(getCookieValue('privyConsent'))
 
