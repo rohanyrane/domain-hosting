@@ -134,7 +134,7 @@ function submitConsent(agreedCategories, domain) {
     cookieConsent.update = true
     toggleBanner('hide')
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
-    localStorage.setItem("privyConsent",cookieConsent)
+    localStorage.setItem("privyConsent",JSON.stringify(cookieConsent))
 }
 
 function toggleBanner(action) {
