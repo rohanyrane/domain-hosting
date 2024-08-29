@@ -53,6 +53,7 @@ function createBanner(categorisedCookies, template, consentCookie) {
         const cookieData = categorisedCookies[category];
         const isNecessary = category === "necessary";
         const isChecked = consentCookie[category] === true || isNecessary;
+        console.log("heree",isChecked,category,consentCookie(category));
         const disabledClass = isNecessary ? 'disabled' : '';
         banner += `
                     <div class="category-AE1VSVI8T5">
