@@ -50,9 +50,9 @@ function createBanner(categorisedCookies, template, consentCookie) {
 
     const categories = Object.keys(categorisedCookies)
     categories.forEach(category => {
-        const cookieData = (categorisedCookies[category])
+        const cookieData = categorisedCookies[category];
         const isNecessary = category === "necessary";
-        const isChecked = consentCookie[category] || isNecessary;
+        const isChecked = consentCookie[category] === true || isNecessary;
         const disabledClass = isNecessary ? 'disabled' : '';
         banner += `
                     <div class="category-AE1VSVI8T5">
@@ -123,7 +123,6 @@ function submitConsent(agreedCategories, domain) {
     } else if (agreedCategories === 'necessary') {
         Object.keys(cookieConsent).forEach(key => cookieConsent[key] = key === 'necessary');
     } else if (agreedCategories === 'preference') {
-        console.log("anssknkfdnk");
         const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
         checkedBoxes.forEach(box => {
             const categoryName = box.id.replace('-toggle', '');
