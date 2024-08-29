@@ -15,8 +15,7 @@ function getCookieValue(name) {
     return cookie ? cookie.split('=')[1] : null;
 }
 
-function createBanner(categorisedCookies, template, consentCookie) {
-    console.log("heree",consentCookie);
+function createBanner(categorisedCookies, template,consentCookie) {
     let banner = `
   
   <div class="idfy-${template.bannerType}-AE1VSVI8T5" id="banner-home">
@@ -515,14 +514,13 @@ window.onload = async () => {
         document.cookie = `privyConsent=${JSON.stringify(cookie)}; path=/`;
     }
     consentCookie = JSON.parse(getCookieValue('privyConsent'))
-    console.log("sdscdc",consentCookie);
 
     consentButtonDiv = document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
     consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
 
-    const banner = createBanner(categorisedCookies, template, domain, consentCookie)
+    const banner = createBanner(categorisedCookies, template, consentCookie)
     const bannerContainer = document.createElement('div')
     bannerContainer.className = "banner-container-AE1VSVI8T5"
     bannerContainer.innerHTML = banner
