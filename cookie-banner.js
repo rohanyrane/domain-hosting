@@ -135,6 +135,26 @@ function submitConsent(agreedCategories) {
     toggleBanner('hide')
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
     localStorage.setItem("privyConsent",JSON.stringify(cookieConsent))
+
+    fetch(`/ext/cookie-banner/${orgId}/${bannerId}`,{
+        method: "POST",
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_preference: cookieConsent })
+    })
+    .then(response => {
+        console.log("submit response", response);
+        if (!response.ok) {
+            throw new Error('Failed to submit consent');
+        }
+        return response.json();
+    })
+    .catch(error => {
+        console.error('Error submitting consent:', error);
+    });
+
+
     location.reload()
 }
 
@@ -521,7 +541,7 @@ window.onload = async () => {
 
     consentButtonDiv = document.createElement('div')
     consentButtonDiv.className = "consent-button-AE1VSVI8T5"
-    consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
+    // consentButtonDiv.innerHTML = `<button onclick="toggleBanner('show')">change consent</button>`
     document.body.appendChild(consentButtonDiv)
 
     const banner = createBanner(categorisedCookies, template, consentCookie)
