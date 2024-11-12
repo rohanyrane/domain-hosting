@@ -113,7 +113,7 @@ function createBanner(categorisedCookies, template,consentCookie) {
     return banner
 }
 
-function submitConsent(agreedCategories, domain) {
+function submitConsent(agreedCategories) {
     const agreedCookies = []
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
 
@@ -1102,6 +1102,5 @@ window.onload = async () => {
     else {
         toggleBanner('hide')
     }
-
 }
 
