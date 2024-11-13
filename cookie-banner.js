@@ -9,6 +9,7 @@ function extractDomainName(url) {
     }
 }
 
+// changed: whole Function added
 function getCookieValue(name) {
     const cookies = document.cookie.split('; ');
     const cookie = cookies.find(cookie => cookie.startsWith(`${name}=`));
@@ -113,6 +114,10 @@ function createBanner(categorisedCookies, template,consentCookie) {
     return banner
 }
 
+// changed: Function changed consnet is stored in cookie and localstorage in this format: {necessary:true, marketing:false}
+// previously was storing a constant in localstorage as, privyConsnet which had one static value
+//fetch call added for making api call
+
 function submitConsent(agreedCategories) {
     const agreedCookies = []
     let cookieConsent = JSON.parse(getCookieValue('privyConsent'));
@@ -136,7 +141,7 @@ function submitConsent(agreedCategories) {
     document.cookie = `privyConsent=${JSON.stringify(cookieConsent)}; path=/`;
     localStorage.setItem("privyConsent",JSON.stringify(cookieConsent))
 
-    fetch(`/ext/cookie-banner/${orgId}/${bannerId}`,{
+    fetch(`https://moral-capital-bison.ngrok-free.app/ext/cookie-banner/${orgId}/${bannerId}`,{
         method: "POST",
         headers:{
             'Content-Type': 'application/json'
@@ -158,6 +163,8 @@ function submitConsent(agreedCategories) {
     location.reload()
 }
 
+
+//changed: whole function added
 function toggleBanner(action) {
     if (action === 'show') {
         document.getElementById('banner-home').style.display = ''
@@ -523,6 +530,7 @@ window.onload = async () => {
     const url = 'https://www.idfy.com/'
     const domain = extractDomainName(url)
     const categories = Object.keys(categorisedCookies)
+    //changed: previously consnet was fetched from localstorage now its cookie  line no.534 to 548 changed
     let consentCookie = JSON.parse(getCookieValue('privyConsent'))
     if (!consentCookie) {
         let cookie = {}
@@ -1116,6 +1124,9 @@ window.onload = async () => {
             }`
     document.head.appendChild(scriptTag)
 
+
+    //changed: check added for showing banner, was not there before
+    //also removed function blockscript and blockiframe
     if (consentCookie.update === false) {
         toggleBanner('show')
     }
