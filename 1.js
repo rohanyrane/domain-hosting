@@ -637,7 +637,7 @@ window.onload = () =>  {
           .button2-AE1VSVI8T5:hover,
           .button1-AE1VSVI8T5:hover,
           .classic-button-AE1VSVI8T5:hover,.banner-button-AE1VSVI8T5:hover,.box-button-AE1VSVI8T5:hover,#allow-btn-AE1VSVI8T5:hover {
-              background-color: ${template.hoverColor};
+              background-color: ${template.hoverColor}!important;
               color: #fff !important;
               transition: 0.3s;
               border: 1px solid ${template.hoverColor} !important;
