@@ -280,7 +280,7 @@ window.onload = () =>  {
   
           .banner-content-AE1VSVI8T5 {
             overflow-y:auto;
-            padding: 15px 10px 0px 12px !important;
+            padding: 20px !important;
             transition: 2s;
           }
   
