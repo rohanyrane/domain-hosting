@@ -511,19 +511,63 @@ const categorisedCookies = {
 
 }
 
+const descriptions = {
+    necessary: "Essential cookies are crucial for the delivery of services, applications, or resources you request. They enable the website to function properly by managing actions such as loading visual elements, accessing resources, or user sign-ins and sign-outs. Essential cookies also ensure the service's security and efficiency by enabling features like authentication and load balancing.",
+    marketing: "Our advertising partners deploy these cookies to tailor advertising to your interests, based on your browsing behavior and preferences. They track your online activity to build a profile for customized advertising, ensuring the ads you encounter on other sites are aligned with your interests.",
+    analytics: "Analytics cookies are used to gather information on website usage, helping us understand visitor behavior. They track user interactions, providing insights that enable us to enhance the website's user experience and functionality. These cookies do not identify you personally but offer aggregated data to improve site performance.",
+    performance: "These cookies collect data on how visitors interact with our website, allowing us to measure and improve our site's and software's effectiveness. They help us track visits and traffic sources, optimizing our website's performance. Without these cookies, we lose the ability to monitor our site's engagement and enhance user experience.",
+    functional: "Set by us or third-party providers, functional cookies add extra features and enhance our website's functionality not directly necessary for the service you've requested. They enable convenience features such as pre-filled text fields, live chat support, and optional forms, improving your browsing experience with services like single sign-on (SSO).",
+    others: "These cookies do not fall into standard categories but serve various purposes. They may enhance specific website features or support experimental or temporary services, and are typically associated with minor functions or specialized needs. Without these, the website's core functionality remains unaffected, but certain experiences or experiments may be impacted."
+}
+
 const template = {
     bannerType: "banner",
     verticalAlign: "bottom",
     horizontalAlign: "right",
     buttonColor: "#1C43B9",
-    hoverColor: "#214698",
-    textColor: "#fff",
+    // hoverColor: "#214698",
+    
+    hoverButtonColor: "#214699",
+    buttonTextColor: "#ffffff",
+    hoverTextColor: "#ffffff",
+
+    // textColor: "#fff",
     theme: "light",
     fontName: "Helvetica",
     toggleColor: "#1C43B9",
     bannerText: `We use three kinds of cookies on our websites: required, functional, and advertising. You can choose whether functional and advertising cookies apply. Click on the different cookie categories to find out more about each category and to change the default settings.`,
     customizeDescription: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`
 }
+
+const templateNew = {
+    bannerType: "box",
+    positionDesktop: "bottom-right",
+    positionMobile: "bottom",
+    buttonColor: "#214698",
+    hoverButtonColor: "#214699",
+    buttonTextColor: "#ffffff",
+    hoverTextColor: "#ffffff",
+    preferenceManagerHorizontalPosition: "left",
+    buttonsText: {
+        acceptAll: "Accept All",
+        moreSettings: "More Settings",
+        savePreferences: "Save My Preferences",
+        allowNecessary: "Allow Only Necessary",
+    },
+    contentDesktop: {
+        cookieNotice:
+            "This website stores cookies on your computer device. These cookies are used to enhance your browser experience, for analytics on how our website is used, and to assist in our marketing and promotional efforts.",
+        preferenceManager: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`,
+    },
+    contentMobile: {
+        cookieNotice:
+            "This website stores cookies on your computer device. These cookies are used to enhance your browser experience, for analytics on how our website is used, and to assist in our marketing and promotional efforts.",
+        preferenceManager: `IDfy's website may request cookies to be set on your device. We use cookies to identify when you visit our sites, to understand your interactions, and to enhance and personalize your experience. Cookies also support social media features and tailor your engagement with IDfy, including delivering more relevant advertisements. You can review the different category headings to learn more and adjust your cookie preferences anytime. Please keep in mind that your choices may affect your experience on our IDfy sites and the quality of services we can provide. Blocking certain types of cookies might affect the functionality and service offerings made available to you.`,
+    },
+    activeBanner: "cookie-banner",
+    activeDevice: "desktop",
+};
+
 
 window.onload = async () => {
 
@@ -582,7 +626,7 @@ window.onload = async () => {
         }
       }
   
-      .idfy-classic-AE1VSVI8T5 {
+      .idfy-box-AE1VSVI8T5 {
           display: flex;
           flex-direction:column;
           background-color: white;
@@ -610,24 +654,6 @@ window.onload = async () => {
         right: 0px;
         left: 0px;
         width: 100%;
-        border-radius: 10px;
-        font-family: ${template.fontName} !important;
-        -webkit-font-smoothing: antialiased;
-        z-index: 2147483647 !important; 
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-        animation: glideBanner 1.5s ease-in-out forwards;
-      }
-  
-      .idfy-box-AE1VSVI8T5 {
-        display: flex;
-        flex-direction:column;
-        background-color: white;
-        justify-content: flex-end;
-        position: fixed;
-        ${vertical}: 30px; 
-        ${leftRight}: 10px;
-        width: 25%;
-        min-width:325px; 
         border-radius: 10px;
         font-family: ${template.fontName} !important;
         -webkit-font-smoothing: antialiased;
@@ -670,18 +696,18 @@ window.onload = async () => {
         margin:14px 10px 14px 0px !important;
       }
   
-      .banner-button-container-AE1VSVI8T5,.classic-button-container-AE1VSVI8T5 {
+      .banner-button-container-AE1VSVI8T5,.box-button-container-AE1VSVI8T5 {
           text-align: right!important;
           margin-top: 10px!important;
       }
   
-      .box-button-container-AE1VSVI8T5{
-        font-size: 14px!important;
-        text-align: center!important;
-        margin-top: 10px!important;
-      }
+    //   .box-button-container-AE1VSVI8T5{
+    //     font-size: 14px!important;
+    //     text-align: center!important;
+    //     margin-top: 10px!important;
+    //   }
   
-      .classic-button-AE1VSVI8T5,.banner-button-AE1VSVI8T5{
+      .box-button-AE1VSVI8T5,.banner-button-AE1VSVI8T5{
           margin: 2.5px !important;
           color: ${template.buttonColor};
           padding: 9px 22px !important;
@@ -695,26 +721,10 @@ window.onload = async () => {
           font-family: ${template.fontName} !important;
           -webkit-font-smoothing: antialiased;
       }
-      .box-button-AE1VSVI8T5 {
-          margin: 2.5px !important;
-          color: ${template.buttonColor};
-          border: 1px solid ${template.buttonColor} !important;
-          border-radius: 8px !important;
-          background: white;
-          line-height: 1!important;
-          font-weight: Normal!important;
-          font-family: ${template.fontName} !important;
-          -webkit-font-smoothing: antialiased;
-          width: 100%;
-          height: 100%;
-          font-size: 15px !important;
-          padding: 9px 22px !important;
-          display:block !important;
-      }
   
       #allow-btn-AE1VSVI8T5 {
           background-color:${template.buttonColor};
-          color: ${template.textColor}!important;
+          color: ${template.buttonTextColor}!important;
           border: 1px solid ${template.buttonColor}!important;
       }
   
@@ -977,7 +987,7 @@ window.onload = async () => {
   
   
       .button1-AE1VSVI8T5 {
-          color: ${template.textColor} !important;
+          color: ${template.buttonTextColor} !important;
           border: 1px solid ${template.buttonColor} !important;
           background-color: ${template.buttonColor};
           transition: 0.3s;
@@ -995,10 +1005,10 @@ window.onload = async () => {
       .button2-AE1VSVI8T5:hover,
       .button1-AE1VSVI8T5:hover,
       .classic-button-AE1VSVI8T5:hover,.banner-button-AE1VSVI8T5:hover,.box-button-AE1VSVI8T5:hover,#allow-btn-AE1VSVI8T5:hover {
-          background-color: ${template.hoverColor};
-          color: #fff !important;
+          background-color: ${template.hoverButtonColor};
+          color: ${template.hoverTextColor} !important;
           transition: 0.3s;
-          border: 1px solid ${template.hoverColor} !important;
+          border: 1px solid ${template.hoverButtonColor} !important;
       }
   
       .powered-AE1VSVI8T5 {
@@ -1017,11 +1027,10 @@ window.onload = async () => {
         } 
   
       @media (max-width: 900px) {
-        .classic-button-container-AE1VSVI8T5,
         .box-button-container-AE1VSVI8T5{
           text-align: center!important;
         }
-        .classic-button-AE1VSVI8T5,.box-button-AE1VSVI8T5 {
+        .box-button-AE1VSVI8T5 {
           width: 100%;
           height: 100%;
           font-size: 15px !important;
