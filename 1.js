@@ -19,8 +19,8 @@ function toggleBanner(action) {
 }
 
 const categoryDescriptions = {
-    necessary: "Essential cookies are crucial for the delivery of services, applications, or resources you request. They enable the website to function properly by managing actions such as loading visual elements, accessing resources, or user sign-ins and sign-outs. Essential cookies also ensure the service's security and efficiency by enabling features like authentication and load balancing.",
-    marketing: "Our advertising partners deploy these cookies to tailor advertising to your interests, based on your browsing behavior and preferences. They track your online activity to build a profile for customized advertising, ensuring the ads you encounter on other sites are aligned with your interests.",
+    NECESSARY: "Essential cookies are crucial for the delivery of services, applications, or resources you request. They enable the website to function properly by managing actions such as loading visual elements, accessing resources, or user sign-ins and sign-outs. Essential cookies also ensure the service's security and efficiency by enabling features like authentication and load balancing.",
+    MARKETING: "Our advertising partners deploy these cookies to tailor advertising to your interests, based on your browsing behavior and preferences. They track your online activity to build a profile for customized advertising, ensuring the ads you encounter on other sites are aligned with your interests.",
     analytics: "Analytics cookies are used to gather information on website usage, helping us understand visitor behavior. They track user interactions, providing insights that enable us to enhance the website's user experience and functionality. These cookies do not identify you personally but offer aggregated data to improve site performance.",
     performance: "These cookies collect data on how visitors interact with our website, allowing us to measure and improve our site's and software's effectiveness. They help us track visits and traffic sources, optimizing our website's performance. Without these cookies, we lose the ability to monitor our site's engagement and enhance user experience.",
     functional: "Set by us or third-party providers, functional cookies add extra features and enhance our website's functionality not directly necessary for the service you've requested. They enable convenience features such as pre-filled text fields, live chat support, and optional forms, improving your browsing experience with services like single sign-on (SSO).",
@@ -57,14 +57,14 @@ function createBanner(categorizedCookies, template) {
                     <div class="categories-AE1VSVI8T5">
                     ${Object.keys(categorizedCookies).map(category => {
         const cookieData = categorizedCookies[category];
-        const isNecessary = category.toLowerCase() === 'necessary';
+        const isNecessary = category === 'necessary';
         const disabledClass = isNecessary ? 'disabled' : '';
         return `
                         <div class="category-AE1VSVI8T5">
                             <div class="category-header-AE1VSVI8T5">
                                 <div onclick="showDropdown('${category}')" style="cursor:pointer">
                                     <button class="dropdown-arrow-AE1VSVI8T5 rotated-AE1VSVI8T5 dropdown-arrow-${category}">^</button>
-                                    <label for="${category}">${category.charAt(0).toUpperCase() + category.slice(1)} Cookies</label>
+                                    <label for="${category}">${category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()} Cookies</label>
                                 </div>
                                 <input type="checkbox" id="${category}-toggle" class="toggle-switch-AE1VSVI8T5" ${isNecessary ? 'checked disabled' : ''} ${disabledClass}>
                                 <label for="${category}-toggle" class="toggle-label-AE1VSVI8T5 ${disabledClass}"></label>
@@ -769,4 +769,36 @@ window.onload = () => {
     } else {
         toggleBanner('hide');
     }
+
+    // List of domains to block
+const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com"];
+
+// Intercept and block network requests using Fetch API override
+(function () {
+  const originalFetch = window.fetch;
+
+  // Override the Fetch API
+  window.fetch = async (...args) => {
+    const url = args[0];
+    if (domainsToBlock.some(domain => url.includes(domain))) {
+      console.warn(`Blocked request to ${url}`);
+      return Promise.reject(new Error(`Blocked request to ${url}`));
+    }
+    return originalFetch(...args);
+  };
+
+  // Intercept XMLHttpRequest
+  const originalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = class extends originalXHR {
+    open(method, url, ...rest) {
+      if (domainsToBlock.some(domain => url.includes(domain))) {
+        console.warn(`Blocked XMLHttpRequest to ${url}`);
+        return; // Skip sending the request
+      }
+      super.open(method, url, ...rest);
+    }
+  };
+
+  console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
+})();
 }
