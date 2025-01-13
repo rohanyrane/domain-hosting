@@ -772,37 +772,155 @@ window.onload = () => {
   
 }
 
-    // List of domains to block
-    const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com", "hubspot.net", "hubspot.com", "hsforms.com", ".hsforms.net", ".hsforms.com"];
-    // Intercept and block network requests using Fetch API override
-    (function () {
-        const originalFetch = window.fetch;
+    // // List of domains to block
+    // const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com", "hubspot.net", "hubspot.com", "hsforms.com", ".hsforms.net", ".hsforms.com"];
+    // // Intercept and block network requests using Fetch API override
+    // (function () {
+    //     const originalFetch = window.fetch;
         
-        // Override the Fetch API
-        window.fetch = async (...args) => {
-          const url = args[0];
-          console.log("urls here", url);
-          if (domainsToBlock.some(domain => url.includes(domain))) {
-            console.warn(`Blocked request to ${url}`);
-            return Promise.reject(new Error(`Blocked request to ${url}`));
-          }
-          return originalFetch(...args);
-        };
+    //     // Override the Fetch API
+    //     window.fetch = async (...args) => {
+    //       const url = args[0];
+    //       console.log("urls here", url);
+    //       if (domainsToBlock.some(domain => url.includes(domain))) {
+    //         console.warn(`Blocked request to ${url}`);
+    //         return Promise.reject(new Error(`Blocked request to ${url}`));
+    //       }
+    //       return originalFetch(...args);
+    //     };
       
-        // Intercept XMLHttpRequest
-        const originalXHR = window.XMLHttpRequest;
-        window.XMLHttpRequest = class extends originalXHR {
-          open(method, url, ...rest) {
-            console.log("XML url", url);
-            if (domainsToBlock.some(domain => url.includes(domain))) {
-              console.warn(`Blocked XMLHttpRequest to ${url}`);
-              return; // Skip sending the request
-            }
-            super.open(method, url, ...rest);
-          }
-        };
+    //     // Intercept XMLHttpRequest
+    //     const originalXHR = window.XMLHttpRequest;
+    //     window.XMLHttpRequest = class extends originalXHR {
+    //       open(method, url, ...rest) {
+    //         console.log("XML url", url);
+    //         if (domainsToBlock.some(domain => url.includes(domain))) {
+    //           console.warn(`Blocked XMLHttpRequest to ${url}`);
+    //           return; // Skip sending the request
+    //         }
+    //         super.open(method, url, ...rest);
+    //       }
+    //     };
       
-        console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
-      })();
+    //     console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
+    //   })();
+
+// List of domains and cookies to block
+const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com"];
+const cookiesToBlock = ["_fbp", "_gid", "ajs_anonymous_id", "__cf_bm", "_cfuvid", "bcookie", "li_sugr", "lidc", "UserMatchHistory", "AnalyticsSyncHistory", "ar_debug"]; // Add cookie names to block
+
+// Helper function to check if a URL matches blocked domains
+function isBlockedDomain(url) {
+  return domainsToBlock.some(domain => url.includes(domain));
+}
+
+// Override document.cookie to block setting specific cookies
+(function () {
+  const originalCookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, "cookie");
+
+  Object.defineProperty(document, "cookie", {
+    configurable: true,
+    enumerable: true,
+    get: function () {
+      return originalCookieDescriptor.get.call(document);
+    },
+    set: function (cookieString) {
+      const cookieName = cookieString.split("=")[0].trim();
+      if (cookiesToBlock.includes(cookieName)) {
+        console.warn(`Blocked setting cookie: ${cookieName}`);
+        return;
+      }
+      originalCookieDescriptor.set.call(document, cookieString);
+    }
+  });
+
+  console.log(`Blocking cookies: ${cookiesToBlock.join(", ")}`);
+})();
+
+// Intercept and block network requests, strip Set-Cookie headers, and block specific cookies
+(function () {
+  const originalFetch = window.fetch;
+
+  // Override the Fetch API
+  window.fetch = async (...args) => {
+    const url = args[0];
+    if (isBlockedDomain(url)) {
+      console.warn(`Blocked request to ${url}`);
+      return Promise.reject(new Error(`Blocked request to ${url}`));
+    }
+    const response = await originalFetch(...args);
+
+    // Clone the response to modify headers
+    const newHeaders = new Headers(response.headers);
+    const setCookieHeader = response.headers.get("Set-Cookie");
+
+    if (setCookieHeader) {
+      const filteredSetCookie = setCookieHeader
+        .split(",")
+        .filter(cookie => !cookiesToBlock.some(blocked => cookie.includes(blocked)))
+        .join(",");
+
+      newHeaders.set("Set-Cookie", filteredSetCookie);
+    }
+
+    const modifiedResponse = new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders
+    });
+
+    return modifiedResponse;
+  };
+
+  // Intercept XMLHttpRequest
+  const originalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = class extends originalXHR {
+    open(method, url, ...rest) {
+      if (isBlockedDomain(url)) {
+        console.warn(`Blocked XMLHttpRequest to ${url}`);
+        this._blocked = true; // Mark this request as blocked
+        return; // Skip sending the request
+      }
+      super.open(method, url, ...rest);
+    }
+
+    setRequestHeader(header, value) {
+      if (this._blocked) return; // Skip blocked requests
+      super.setRequestHeader(header, value);
+    }
+
+    send(...args) {
+      if (this._blocked) {
+        console.warn("Blocked sending XMLHttpRequest");
+        return; // Skip sending the request
+      }
+
+      // Intercept and modify the response headers
+      this.addEventListener("readystatechange", function () {
+        if (this.readyState === 4 && isBlockedDomain(this.responseURL)) {
+          const responseHeaders = this.getAllResponseHeaders();
+          const filteredHeaders = responseHeaders
+            .split("\r\n")
+            .filter(header => {
+              if (header.toLowerCase().startsWith("set-cookie")) {
+                return !cookiesToBlock.some(blocked => header.includes(blocked));
+              }
+              return true;
+            })
+            .join("\r\n");
+
+          console.warn(`Blocked Set-Cookie headers containing blocked cookies from ${this.responseURL}`);
+          Object.defineProperty(this, "getAllResponseHeaders", {
+            value: () => filteredHeaders
+          });
+        }
+      });
+
+      super.send(...args);
+    }
+  };
+
+  console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")} and cookies: ${cookiesToBlock.join(", ")}`);
+})();
 
       
