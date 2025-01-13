@@ -773,37 +773,110 @@ window.onload = () => {
 }
 
     // // List of domains to block
-    const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com", "hubspot.net", "hubspot.com", "hsforms.com", ".hsforms.net", ".hsforms.com", ".twitter.com", ".doubleclick.net", ".vimeo.com"];
+    const domainsToBlock = ["linkedin.com", "facebook.com", "hubspot.net", "hubspot.com", "hsforms.com", ".hsforms.net", ".hsforms.com", ".twitter.com", ".doubleclick.net", ".vimeo.com", "twitter.com", "vimeo.com"];
     // // Intercept and block network requests using Fetch API override
-    (function () {
-        const originalFetch = window.fetch;
+    // (function () {
+    //     const originalFetch = window.fetch;
         
-        // Override the Fetch API
-        window.fetch = async (...args) => {
-          const url = args[0];
-          console.log("urls here", url);
-          if (domainsToBlock.some(domain => url.includes(domain))) {
-            console.warn(`Blocked request to ${url}`);
-            return Promise.reject(new Error(`Blocked request to ${url}`));
-          }
-          return originalFetch(...args);
-        };
+    //     // Override the Fetch API
+    //     window.fetch = async (...args) => {
+    //       const url = args[0];
+    //       console.log("urls here", url);
+    //       if (domainsToBlock.some(domain => url.includes(domain))) {
+    //         console.warn(`Blocked request to ${url}`);
+    //         return Promise.reject(new Error(`Blocked request to ${url}`));
+    //       }
+    //       return originalFetch(...args);
+    //     };
       
-        // Intercept XMLHttpRequest
-        const originalXHR = window.XMLHttpRequest;
-        window.XMLHttpRequest = class extends originalXHR {
-          open(method, url, ...rest) {
-            console.log("XML url", url);
-            if (domainsToBlock.some(domain => url.includes(domain))) {
-              console.warn(`Blocked XMLHttpRequest to ${url}`);
-              return; // Skip sending the request
-            }
-            super.open(method, url, ...rest);
-          }
-        };
+    //     // Intercept XMLHttpRequest
+    //     const originalXHR = window.XMLHttpRequest;
+    //     window.XMLHttpRequest = class extends originalXHR {
+    //       open(method, url, ...rest) {
+    //         console.log("XML url", url);
+    //         if (domainsToBlock.some(domain => url.includes(domain))) {
+    //           console.warn(`Blocked XMLHttpRequest to ${url}`);
+    //           return; // Skip sending the request
+    //         }
+    //         super.open(method, url, ...rest);
+    //       }
+    //     };
       
-        console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
-      })();
+    //     console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
+    //   })();
+
+    // Create a custom EventTarget to handle custom events
+const networkEventEmitter = new EventTarget();
+
+// Listen for custom network events
+networkEventEmitter.addEventListener("networkRequest", (e) => {
+  const { url, method, type, status } = e.detail;
+  console.log(`[Network Event] ${type} Request to ${url} with method ${method}, status: ${status}`);
+});
+
+// Function to log network requests and dispatch custom events
+const logRequest = (url, method, status, type) => {
+  // Dispatch a custom event with the request details
+  networkEventEmitter.dispatchEvent(new CustomEvent("networkRequest", {
+    detail: { url, method, status, type }
+  }));
+};
+
+// Intercept and block network requests using Fetch API override
+(function () {
+  const originalFetch = window.fetch;
+
+  // Override the Fetch API
+  window.fetch = async (...args) => {
+    const url = args[0];
+    const method = args[1]?.method || "GET";  // Default to GET if method is not provided
+
+    // Log every fetch request and dispatch a custom event
+    logRequest(url, method, 'Pending', 'Fetch');
+
+    if (domainsToBlock.some(domain => url.includes(domain))) {
+      console.warn(`Blocked request to ${url}`);
+      return Promise.reject(new Error(`Blocked request to ${url}`));
+    }
+
+    try {
+      const response = await originalFetch(...args);
+      logRequest(url, method, response.status, 'Fetch');
+      return response;
+    } catch (error) {
+      logRequest(url, method, error.message, 'Fetch');
+      throw error;
+    }
+  };
+
+  // Intercept XMLHttpRequest
+  const originalXHR = window.XMLHttpRequest;
+  window.XMLHttpRequest = class extends originalXHR {
+    open(method, url, ...rest) {
+      // Log every XMLHttpRequest and dispatch a custom event
+      logRequest(url, method, 'Pending', 'XHR');
+
+      if (domainsToBlock.some(domain => url.includes(domain))) {
+        console.warn(`Blocked XMLHttpRequest to ${url}`);
+        return; // Skip sending the request
+      }
+      super.open(method, url, ...rest);
+    }
+
+    send(body) {
+      const onReadyStateChange = () => {
+        if (this.readyState === 4) {
+          logRequest(this.responseURL, this.method, this.status, 'XHR');
+        }
+      };
+
+      this.addEventListener("readystatechange", onReadyStateChange);
+      super.send(body);
+    }
+  };
+
+  console.log(`Blocking rules applied for domains: ${domainsToBlock.join(", ")}`);
+})();
 
 // List of domains and cookies to block
 // const domainsToBlock = ["linkedin.com", "facebook.com", "twitter.com"];
